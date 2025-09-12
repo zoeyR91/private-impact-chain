@@ -1,0 +1,51 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle with Gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F3F4F6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="chainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1D4ED8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Main Background Circle -->
+  <circle cx="32" cy="32" r="30" fill="url(#bgGradient)" stroke="#FFFFFF" stroke-width="2"/>
+  
+  <!-- Shield Icon (Privacy Protection) -->
+  <path d="M32 8L20 16V28C20 36 26 42 32 44C38 42 44 36 44 28V16L32 8Z" 
+        fill="url(#shieldGradient)" 
+        stroke="#10B981" 
+        stroke-width="1.5"/>
+  
+  <!-- Lock Icon inside Shield -->
+  <rect x="28" y="24" width="8" height="6" rx="1" fill="#10B981"/>
+  <path d="M30 24V20C30 18.5 31.5 17 33 17C34.5 17 36 18.5 36 20V24" 
+        stroke="#10B981" 
+        stroke-width="1.5" 
+        fill="none"/>
+  
+  <!-- Chain Links (Impact Chain) -->
+  <circle cx="16" cy="48" r="4" fill="url(#chainGradient)" opacity="0.8"/>
+  <circle cx="24" cy="48" r="4" fill="url(#chainGradient)" opacity="0.6"/>
+  <circle cx="32" cy="48" r="4" fill="url(#chainGradient)" opacity="0.4"/>
+  <circle cx="40" cy="48" r="4" fill="url(#chainGradient)" opacity="0.2"/>
+  <circle cx="48" cy="48" r="4" fill="url(#chainGradient)" opacity="0.1"/>
+  
+  <!-- Connection Lines -->
+  <path d="M20 48L22 48" stroke="#3B82F6" stroke-width="2" opacity="0.6"/>
+  <path d="M28 48L30 48" stroke="#3B82F6" stroke-width="2" opacity="0.4"/>
+  <path d="M36 48L38 48" stroke="#3B82F6" stroke-width="2" opacity="0.2"/>
+  <path d="M44 48L46 48" stroke="#3B82F6" stroke-width="2" opacity="0.1"/>
+  
+  <!-- Privacy Eye (Encrypted Vision) -->
+  <circle cx="50" cy="18" r="6" fill="#FFFFFF" stroke="#10B981" stroke-width="1"/>
+  <circle cx="50" cy="18" r="3" fill="#10B981"/>
+  <circle cx="51" cy="17" r="1" fill="#FFFFFF"/>
+</svg>
