@@ -29,7 +29,7 @@ export const DonationHero = () => {
         </h1>
         
         <p className="text-xl md:text-2xl text-white/90 mb-12 max-w-4xl mx-auto leading-relaxed">
-          Make confidential political donations while keeping your identity and donation amount secure. 
+          Make confidential charitable donations while keeping your identity and donation amount secure. 
           All contributions are verifiable through our encrypted transparency system.
         </p>
 

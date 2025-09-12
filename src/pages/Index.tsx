@@ -1,29 +1,29 @@
 import { DonationHero } from "@/components/DonationHero";
 import { CampaignCard } from "@/components/CampaignCard";
-import { WalletConnect } from "@/components/WalletConnect";
+import { Header } from "@/components/Header";
 
 const Index = () => {
   // Mock campaign data
   const campaigns = [
     {
-      name: "Democratic Leadership Fund",
-      description: "Supporting progressive candidates and democratic values across the nation",
+      name: "Clean Water Initiative",
+      description: "Providing access to clean drinking water in underserved communities worldwide",
       totalRaised: 2850000,
       goal: 5000000,
       donorCount: 12847,
       image: "https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=400&h=300&fit=crop"
     },
     {
-      name: "Republican Victory Initiative",
-      description: "Advancing conservative principles and supporting Republican candidates nationwide",
+      name: "Education for All Foundation",
+      description: "Building schools and providing educational resources for children in developing countries",
       totalRaised: 3200000,
       goal: 6000000,
       donorCount: 15632,
       image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&h=300&fit=crop"
     },
     {
-      name: "Independent Voices Coalition",
-      description: "Empowering independent candidates and promoting bipartisan solutions",
+      name: "Climate Action Network",
+      description: "Supporting environmental conservation and sustainable development projects",
       totalRaised: 890000,
       goal: 2000000,
       donorCount: 4521,
@@ -33,8 +33,13 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Header */}
+      <Header />
+      
       {/* Hero Section */}
-      <DonationHero />
+      <div className="pt-20">
+        <DonationHero />
+      </div>
       
       {/* Campaigns Section */}
       <section className="py-20 px-6">
@@ -44,7 +49,7 @@ const Index = () => {
               Active Campaigns
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Support the political movements you believe in while maintaining complete privacy. 
+              Support charitable causes you believe in while maintaining complete privacy. 
               All donations are encrypted and anonymous.
             </p>
           </div>
@@ -60,18 +65,24 @@ const Index = () => {
         </div>
       </section>
       
-      {/* Wallet Connect Section */}
+      {/* Call to Action Section */}
       <section className="py-20 px-6 bg-muted/30">
         <div className="max-w-7xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
             Ready to Make a Difference?
           </h2>
           <p className="text-xl text-muted-foreground mb-12 max-w-3xl mx-auto">
-            Connect your wallet and start making anonymous political donations today. 
+            Connect your wallet and start making anonymous charitable donations today. 
             Your privacy is guaranteed, your impact is real.
           </p>
           
-          <WalletConnect />
+          <div className="flex justify-center">
+            <div className="text-center">
+              <p className="text-sm text-muted-foreground mb-4">
+                Click "Connect Wallet & Donate" in the hero section above to get started
+              </p>
+            </div>
+          </div>
         </div>
       </section>
     </div>
