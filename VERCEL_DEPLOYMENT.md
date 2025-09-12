@@ -30,11 +30,12 @@ Click "Environment Variables" and add the following:
 
 ```
 NEXT_PUBLIC_CHAIN_ID=11155111
-NEXT_PUBLIC_RPC_URL=https://sepolia.infura.io/v3/b18fb7e6ca7045ac83c41157ab93f990
-NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=2ec9743d0d0cd7fb94dee1a7e6d33475
-NEXT_PUBLIC_INFURA_API_KEY=b18fb7e6ca7045ac83c41157ab93f990
+NEXT_PUBLIC_RPC_URL=https://sepolia.infura.io/v3/YOUR_INFURA_API_KEY
+NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=YOUR_WALLET_CONNECT_PROJECT_ID
+VITE_WALLET_CONNECT_PROJECT_ID=YOUR_WALLET_CONNECT_PROJECT_ID
+NEXT_PUBLIC_INFURA_API_KEY=YOUR_INFURA_API_KEY
 VITE_SEPOLIA_CONTRACT_ADDRESS=your_contract_address_here
-VITE_SEPOLIA_RPC_URL=https://sepolia.infura.io/v3/b18fb7e6ca7045ac83c41157ab93f990
+VITE_SEPOLIA_RPC_URL=https://sepolia.infura.io/v3/YOUR_INFURA_API_KEY
 ```
 
 **Important**: Replace `your_contract_address_here` with the actual deployed contract address.
@@ -59,11 +60,12 @@ VITE_SEPOLIA_RPC_URL=https://sepolia.infura.io/v3/b18fb7e6ca7045ac83c41157ab93f9
 | Variable | Value | Description |
 |----------|-------|-------------|
 | `NEXT_PUBLIC_CHAIN_ID` | `11155111` | Sepolia testnet chain ID |
-| `NEXT_PUBLIC_RPC_URL` | `https://sepolia.infura.io/v3/b18fb7e6ca7045ac83c41157ab93f990` | Sepolia RPC endpoint |
-| `NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID` | `2ec9743d0d0cd7fb94dee1a7e6d33475` | WalletConnect project ID |
-| `NEXT_PUBLIC_INFURA_API_KEY` | `b18fb7e6ca7045ac83c41157ab93f990` | Infura API key |
+| `NEXT_PUBLIC_RPC_URL` | `https://sepolia.infura.io/v3/YOUR_INFURA_API_KEY` | Sepolia RPC endpoint |
+| `NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID` | `YOUR_WALLET_CONNECT_PROJECT_ID` | WalletConnect project ID |
+| `VITE_WALLET_CONNECT_PROJECT_ID` | `YOUR_WALLET_CONNECT_PROJECT_ID` | WalletConnect project ID for Vite |
+| `NEXT_PUBLIC_INFURA_API_KEY` | `YOUR_INFURA_API_KEY` | Infura API key |
 | `VITE_SEPOLIA_CONTRACT_ADDRESS` | `your_contract_address` | Deployed contract address |
-| `VITE_SEPOLIA_RPC_URL` | `https://sepolia.infura.io/v3/b18fb7e6ca7045ac83c41157ab93f990` | Contract RPC URL |
+| `VITE_SEPOLIA_RPC_URL` | `https://sepolia.infura.io/v3/YOUR_INFURA_API_KEY` | Contract RPC URL |
 
 ## Troubleshooting
 
