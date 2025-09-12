@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,8 +18,21 @@ export const DonationModal = ({ campaignName, trigger }: DonationModalProps) => 
   const [donationAmount, setDonationAmount] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
-  const [step, setStep] = useState<'amount' | 'confirm' | 'processing' | 'complete'>('amount');
+  const [step, setStep] = useState<'connect' | 'amount' | 'confirm' | 'processing' | 'complete'>('connect');
   const { toast } = useToast();
+  const { open } = useWeb3Modal();
+  const { address, isConnected } = useAccount();
+  const { disconnect } = useDisconnect();
+
+  const handleConnectWallet = () => {
+    open();
+  };
+
+  const handleWalletConnected = () => {
+    if (isConnected) {
+      setStep('amount');
+    }
+  };
 
   const handleAmountSubmit = () => {
     if (!donationAmount || parseFloat(donationAmount) <= 0) {
@@ -51,11 +64,18 @@ export const DonationModal = ({ campaignName, trigger }: DonationModalProps) => 
   };
 
   const resetModal = () => {
-    setStep('amount');
+    setStep('connect');
     setDonationAmount("");
     setIsComplete(false);
     setIsProcessing(false);
   };
+
+  // Listen for wallet connection changes
+  React.useEffect(() => {
+    if (isConnected && step === 'connect') {
+      setStep('amount');
+    }
+  }, [isConnected, step]);
 
   return (
     <Dialog onOpenChange={(open) => !open && resetModal()}>
@@ -73,8 +93,69 @@ export const DonationModal = ({ campaignName, trigger }: DonationModalProps) => 
           </DialogDescription>
         </DialogHeader>
 
+        {step === 'connect' && (
+          <div className="space-y-6">
+            <div className="text-center space-y-4">
+              <div className="mx-auto h-16 w-16 bg-primary/10 rounded-full flex items-center justify-center">
+                <Wallet className="h-8 w-8 text-primary" />
+              </div>
+              <div className="space-y-2">
+                <h3 className="text-lg font-semibold">Connect Your Wallet</h3>
+                <p className="text-sm text-muted-foreground">
+                  To make a donation, you need to connect your Web3 wallet first.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-accent/10 p-4 rounded-lg">
+              <div className="flex items-start gap-3">
+                <Shield className="h-5 w-5 text-accent mt-0.5" />
+                <div className="space-y-1">
+                  <p className="text-sm font-medium">Privacy Protected</p>
+                  <p className="text-xs text-muted-foreground">
+                    Your wallet connection is secure and your donation will remain completely anonymous.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <Button onClick={handleConnectWallet} className="w-full" size="lg">
+              <Wallet className="mr-2 h-4 w-4" />
+              Connect Wallet
+            </Button>
+          </div>
+        )}
+
         {step === 'amount' && (
           <div className="space-y-6">
+            {/* Wallet Info */}
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 bg-green-500 rounded-full flex items-center justify-center">
+                    <CheckCircle className="h-4 w-4 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-green-800">Wallet Connected</p>
+                    <p className="text-xs text-green-600">
+                      {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'Connected'}
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    disconnect();
+                    setStep('connect');
+                  }}
+                  className="text-green-700 border-green-300 hover:bg-green-100"
+                >
+                  Disconnect
+                </Button>
+              </div>
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="amount">Donation Amount (USD)</Label>
               <div className="relative">
