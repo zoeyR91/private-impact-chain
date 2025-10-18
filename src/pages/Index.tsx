@@ -61,12 +61,20 @@ const Index = () => {
               {isConnected ? 'Disconnect Wallet' : 'Connect Wallet'}
             </Button>
             {isConnected && (
-              <Link to="/donate">
-                <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                  <Heart className="mr-2 h-5 w-5" />
-                  Make Donation
-                </Button>
-              </Link>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link to="/donate">
+                  <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                    <Heart className="mr-2 h-5 w-5" />
+                    Make Donation
+                  </Button>
+                </Link>
+                <Link to="/history">
+                  <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                    <Eye className="mr-2 h-5 w-5" />
+                    View History
+                  </Button>
+                </Link>
+              </div>
             )}
           </div>
           

@@ -415,12 +415,20 @@ export default function Donate() {
               </div>
             </div>
 
-            {/* Reset Button */}
+            {/* Action Buttons */}
             {currentStep === 'complete' && (
-              <Button onClick={resetDemo} variant="outline" className="w-full">
-                <Unlock className="mr-2 h-4 w-4" />
-                Start New Donation
-              </Button>
+              <div className="flex gap-4">
+                <Button onClick={resetDemo} variant="outline" className="flex-1">
+                  <Unlock className="mr-2 h-4 w-4" />
+                  Start New Donation
+                </Button>
+                <Link to="/history" className="flex-1">
+                  <Button className="w-full">
+                    <Eye className="mr-2 h-4 w-4" />
+                    View History
+                  </Button>
+                </Link>
+              </div>
             )}
           </CardContent>
         </Card>
