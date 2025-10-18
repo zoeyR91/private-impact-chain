@@ -212,52 +212,43 @@ export function useContract() {
               args: [BigInt(i)]
             });
 
-            if (campaignData) {
-              campaigns.push({
+            if (campaignData && Array.isArray(campaignData)) {
+              console.log(`Campaign ${i} raw data:`, campaignData);
+              // Parse the array data from contract
+              // Structure: [id, targetAmount, currentAmount, donorCount, impactScore, isActive, isVerified, name, description, category, organizer, startTime, endTime]
+              const campaign = {
                 id: i,
-                name: campaignData.name,
-                description: campaignData.description,
-                category: campaignData.category,
-                targetAmount: Number(campaignData.targetAmount),
-                currentAmount: Number(campaignData.currentAmount),
-                donorCount: Number(campaignData.donorCount),
-                impactScore: Number(campaignData.impactScore),
-                isActive: campaignData.isActive,
-                isVerified: campaignData.isVerified,
-                organizer: campaignData.organizer,
-                startTime: Number(campaignData.startTime),
-                endTime: Number(campaignData.endTime)
-              });
+                name: campaignData[7], // name
+                description: campaignData[8], // description
+                category: campaignData[9], // category
+                targetAmount: Number(campaignData[1]), // targetAmount
+                currentAmount: Number(campaignData[2]), // currentAmount
+                donorCount: Number(campaignData[3]), // donorCount
+                impactScore: Number(campaignData[4]), // impactScore
+                isActive: campaignData[5], // isActive
+                isVerified: campaignData[6], // isVerified
+                organizer: campaignData[10], // organizer
+                startTime: Number(campaignData[11]), // startTime
+                endTime: Number(campaignData[12]) // endTime
+              };
+              console.log(`Campaign ${i} parsed:`, campaign);
+              campaigns.push(campaign);
             }
           } catch (error) {
             console.warn(`Failed to fetch campaign ${i}:`, error);
           }
         }
 
+        console.log(`Successfully fetched ${campaigns.length} campaigns from contract`);
         return campaigns;
       } catch (contractError) {
-        console.warn('Contract read failed, using mock data:', contractError);
-        // Fallback to mock data if contract read fails
-        return [
-          {
-            id: 0,
-            name: "Clean Water Initiative",
-            description: "Providing access to clean drinking water in underserved communities worldwide",
-            category: "Environment",
-            targetAmount: 5000000,
-            currentAmount: 2850000,
-            donorCount: 12847,
-            impactScore: 95,
-            isActive: true,
-            isVerified: true,
-            organizer: "0x1234567890123456789012345678901234567890",
-            startTime: Math.floor(Date.now() / 1000) - 86400 * 30,
-            endTime: Math.floor(Date.now() / 1000) + 86400 * 30
-          }
-        ];
+        console.warn('Contract read failed:', contractError);
+        // Return empty array if contract read fails
+        return [];
       }
     } catch (error) {
       console.error('Error fetching campaigns:', error);
+      // Return empty array if there's an error
       return [];
     }
   };

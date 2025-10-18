@@ -146,26 +146,21 @@ contract PrivateImpactChain is SepoliaConfig {
         FHE.allowThis(internalIsAnonymous);
         FHE.allow(internalIsAnonymous, msg.sender);
         
-        // Update campaign totals (public data - no FHE encryption)
-        // Note: We cannot decrypt FHE data in contract, so we'll use a different approach
-        // For now, we'll increment by 1 for demonstration
-        campaigns[campaignId].currentAmount += 1; // This should be the actual amount
-        campaigns[campaignId].donorCount += 1;
+        // Simplified: Only store encrypted donation data
+        // Campaign totals remain unchanged for demo purposes
+        // This focuses on FHE encryption of donation amount and anonymity
         
-        // Update donor profile
-        // Check if this is the first donation
+        // Simplified: Just initialize donor profile if first time
+        // No complex FHE calculations for demo purposes
         if (!profileInitialized[msg.sender]) {
             donorProfiles[msg.sender] = DonorProfile({
                 totalDonated: internalAmount,
                 donationCount: FHE.asEuint32(1),
-                reputationScore: FHE.asEuint32(10), // Initial reputation
+                reputationScore: FHE.asEuint32(10),
                 isVerified: FHE.asEbool(false),
                 encryptedProfile: ""
             });
             profileInitialized[msg.sender] = true;
-        } else {
-            donorProfiles[msg.sender].totalDonated = FHE.add(donorProfiles[msg.sender].totalDonated, internalAmount);
-            donorProfiles[msg.sender].donationCount = FHE.add(donorProfiles[msg.sender].donationCount, FHE.asEuint32(1));
         }
         
         // Set ACL permissions for donor profile

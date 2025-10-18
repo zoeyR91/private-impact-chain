@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from '../components/ui/alert';
 import { Loader2, Shield, Eye, EyeOff, Lock, Unlock, Heart, ArrowLeft, CheckCircle, History, DollarSign, User, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { decryptDonationData } from '../lib/fheUtils';
+import { CONTRACT_ADDRESS } from '../config/contracts';
 
 interface DonationRecord {
   id: string;
@@ -131,7 +132,7 @@ export default function DonationHistory() {
       addLog('✅ Wallet signer obtained');
 
       addLog('🔄 Step 3: Decrypting with FHE...');
-      const contractAddress = process.env.VITE_SEPOLIA_CONTRACT_ADDRESS || '0x0000000000000000000000000000000000000000';
+      const contractAddress = CONTRACT_ADDRESS;
       
       const decryptedResult = await decryptDonationData(
         instance,

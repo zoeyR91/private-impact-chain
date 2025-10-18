@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useAccount } from 'wagmi';
+import { useAccount, useWriteContract } from 'wagmi';
 import { useFHE } from '../hooks/useFHE';
 import { useContract } from '../hooks/useContract';
+import { CONTRACT_ABI, CONTRACT_ADDRESS } from '../config/contracts';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Input } from '../components/ui/input';
@@ -16,12 +17,13 @@ import { Link } from 'react-router-dom';
 
 export default function Donate() {
   const { address, isConnected } = useAccount();
+  const { writeContractAsync } = useWriteContract();
   const { instance, isInitialized, error: fheError } = useFHE();
   const { makeDonation, getAllCampaigns } = useContract();
   
   // Form state
   const [amount, setAmount] = useState('');
-  const [isAnonymous, setIsAnonymous] = useState(false);
+  const [isAnonymous, setIsAnonymous] = useState(true); // Default to anonymous
   const [selectedCampaignId, setSelectedCampaignId] = useState<string>('');
   
   // Process state
@@ -57,10 +59,14 @@ export default function Donate() {
         if (campaignData.length > 0) {
           setSelectedCampaignId(campaignData[0].id.toString());
           setSelectedCampaign(campaignData[0]);
+          addLog(`🎯 Auto-selected campaign: ${campaignData[0].name}`);
         }
       } catch (error) {
         addLog(`❌ Failed to load campaigns: ${error instanceof Error ? error.message : 'Unknown error'}`);
         console.error('Error loading campaigns:', error);
+        // No fallback data - show empty state
+        setCampaigns([]);
+        addLog('📊 No campaigns available');
       } finally {
         setIsLoadingCampaigns(false);
       }
@@ -104,18 +110,42 @@ export default function Donate() {
       addLog(`📊 Anonymous: ${isAnonymous ? 'Yes' : 'No'}`);
       addLog('🔄 Creating encrypted input...');
       
+      const contractAddress = CONTRACT_ADDRESS;
+      addLog(`📊 Using contract address: ${contractAddress}`);
+      addLog(`📊 User address: ${address}`);
+      addLog(`📊 FHE instance ready: ${!!instance}`);
+      
+      // 验证FHE实例状态
+      if (!instance) {
+        throw new Error('FHE instance is not initialized');
+      }
+      
+      addLog('🔄 Creating encrypted input with FHE instance...');
       const encryptedInput = await instance.createEncryptedInput(
-        process.env.VITE_SEPOLIA_CONTRACT_ADDRESS || '0x0000000000000000000000000000000000000000',
+        contractAddress,
         address
       );
+      addLog(`✅ Encrypted input created successfully`);
       
-      // Add amount (in cents) - this gets encrypted
+      // Add amount (in cents) - this gets encrypted (参考bloom-chain-secure实现)
       const amountInCents = Math.floor(parseFloat(amount) * 100);
+      addLog(`📊 Original amount: $${amount}`);
+      addLog(`📊 Amount in cents: ${amountInCents}`);
+      addLog(`📊 BigInt conversion: ${BigInt(amountInCents)}`);
+      
+      // 验证32位限制 (参考bloom-chain-secure)
+      const max32Bit = 4294967295; // 2^32 - 1
+      if (amountInCents > max32Bit) {
+        throw new Error(`Amount ${amountInCents} exceeds 32-bit limit`);
+      }
+      
       encryptedInput.add32(BigInt(amountInCents));
       addLog(`✅ Amount added to FHE input: ${amountInCents} cents`);
       
-      // Add anonymous flag - this gets encrypted
-      encryptedInput.add8(isAnonymous ? 1 : 0);
+      // Add anonymous flag - this gets encrypted (使用add8，因为合约期望ebool)
+      const anonymousValue = isAnonymous ? 1 : 0;
+      addLog(`📊 Anonymous value: ${anonymousValue}`);
+      encryptedInput.add8(anonymousValue); // 保持add8，因为合约期望ebool
       addLog(`✅ Anonymous flag added to FHE input: ${isAnonymous}`);
       
       addLog('🔄 Encrypting data with FHE...');
@@ -125,28 +155,85 @@ export default function Donate() {
       addLog(`📊 Generated ${encryptedResult.handles.length} encrypted handles`);
       addLog(`📊 Input proof length: ${encryptedResult.inputProof.length} bytes`);
       
+      // Convert handles to hex format properly (参考bloom-chain-secure实现)
+      addLog('🔄 Converting handles to hex format...');
+      const handles = encryptedResult.handles.map((handle: any, index: number) => {
+        let hex = '';
+        if (handle instanceof Uint8Array) {
+          hex = `0x${Array.from(handle).map(b => b.toString(16).padStart(2, '0')).join('')}`;
+        } else if (typeof handle === 'string') {
+          hex = handle.startsWith('0x') ? handle : `0x${handle}`;
+        } else if (Array.isArray(handle)) {
+          hex = `0x${handle.map(b => b.toString(16).padStart(2, '0')).join('')}`;
+        } else {
+          hex = `0x${handle.toString()}`;
+        }
+
+        // Ensure exactly 32 bytes (66 characters including 0x)
+        if (hex.length < 66) {
+          hex = hex.padEnd(66, '0');
+        } else if (hex.length > 66) {
+          hex = hex.substring(0, 66);
+        }
+
+        addLog(`📊 Handle ${index}: ${hex.substring(0, 10)}... (${hex.length} chars)`);
+        return hex;
+      });
+      
+      // Convert proof to hex (参考bloom-chain-secure实现)
+      const proof = `0x${Array.from(encryptedResult.inputProof)
+        .map((b: number) => b.toString(16).padStart(2, '0')).join('')}`;
+      addLog(`📊 Proof length: ${proof.length} chars`);
+      addLog(`📊 Proof: ${proof.substring(0, 20)}...`);
+
       setEncryptedData({
-        handles: encryptedResult.handles,
-        inputProof: encryptedResult.inputProof,
+        handles: handles, // 使用转换后的hex数组
+        proof: proof,     // 使用转换后的hex字符串
         amount: amountInCents,
-        isAnonymous,
-        handlesHex: encryptedResult.handles.map((h: any) => {
-          if (h instanceof Uint8Array) {
-            return `0x${Array.from(h).map(b => b.toString(16).padStart(2, '0')).join('')}`;
-          }
-          return h;
-        })
+        isAnonymous
       });
       
       setCurrentStep('submitting');
       addLog('📤 Step 2: Submitting encrypted donation to blockchain...');
       
-      // Step 2: Submit to contract
-      const tx = await makeDonation(
-        parseInt(campaignId),
-        parseFloat(amount),
-        isAnonymous
-      );
+      // 详细诊断日志
+      addLog(`📊 Contract Address: ${contractAddress}`);
+      addLog(`📊 Campaign ID: ${parseInt(selectedCampaignId)}`);
+      addLog(`📊 Amount Handle: ${handles[0]}`);
+      addLog(`📊 Anonymous Handle: ${handles[1]}`);
+      addLog(`📊 Proof: ${proof}`);
+      addLog(`📊 Function: makeDonation`);
+      addLog(`📊 ABI Length: ${CONTRACT_ABI.length}`);
+      
+      // Step 2: Submit to contract using encrypted data (参考KeepSecret实现)
+      // Contract expects: campaignId, amount (bytes32), isAnonymous (bytes32), inputProof (bytes)
+      addLog('🔄 Preparing contract transaction...');
+      
+      // Convert inputProof to hex string if it's not already a string
+      let inputProofHex: string;
+      if (typeof encryptedResult.inputProof === 'string') {
+        inputProofHex = encryptedResult.inputProof;
+      } else if (encryptedResult.inputProof instanceof Uint8Array) {
+        inputProofHex = `0x${Array.from(encryptedResult.inputProof).map(b => b.toString(16).padStart(2, '0')).join('')}`;
+      } else {
+        inputProofHex = `0x${encryptedResult.inputProof.toString()}`;
+      }
+      
+      addLog(`📊 Input Proof Type: ${typeof encryptedResult.inputProof}`);
+      addLog(`📊 Input Proof Length: ${inputProofHex.length} chars`);
+      
+      const tx = await writeContractAsync({
+        address: contractAddress as `0x${string}`,
+        abi: CONTRACT_ABI,
+        functionName: 'makeDonation',
+        args: [
+          parseInt(selectedCampaignId),           // campaignId (uint256)
+          handles[0] as `0x${string}`,            // amount (bytes32) - first handle
+          handles[1] as `0x${string}`,            // isAnonymous (bytes32) - second handle  
+          inputProofHex as `0x${string}`         // inputProof (bytes) - 确保是字符串格式
+        ],
+        value: BigInt(0) // No ETH value needed for FHE donations
+      });
       
       addLog(`✅ Transaction submitted: ${tx}`);
       addLog('⏳ Waiting for transaction confirmation...');
@@ -180,6 +267,32 @@ export default function Donate() {
       
     } catch (error) {
       addLog(`❌ FHE Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      addLog(`📊 Error Type: ${typeof error}`);
+      addLog(`📊 Error Name: ${error instanceof Error ? error.name : 'Unknown'}`);
+      addLog(`📊 Error Stack: ${error instanceof Error ? error.stack : 'No stack'}`);
+      
+      // 详细错误信息
+      if (error instanceof Error) {
+        addLog(`📊 Error Details:`);
+        addLog(`  - Message: ${error.message}`);
+        addLog(`  - Name: ${error.name}`);
+        if (error.cause) {
+          addLog(`  - Cause: ${error.cause}`);
+        }
+      }
+      
+      // 检查是否是用户拒绝签名
+      if (error instanceof Error && error.message.includes('User rejected')) {
+        addLog(`🚫 User rejected the transaction signature`);
+        addLog(`💡 This means the wallet popup was closed or rejected`);
+      }
+      
+      // 检查是否是合约错误
+      if (error instanceof Error && error.message.includes('Contract')) {
+        addLog(`📋 Contract interaction error detected`);
+        addLog(`💡 This might be due to campaign expiration or invalid parameters`);
+      }
+      
       setIsProcessing(false);
       setCurrentStep('idle');
     }
@@ -306,15 +419,21 @@ export default function Donate() {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-green-600">${(selectedCampaign.currentAmount / 100).toLocaleString()}</div>
+                  <div className="text-2xl font-bold text-green-600">
+                    ${selectedCampaign.currentAmount ? (selectedCampaign.currentAmount / 100).toLocaleString() : '0'}
+                  </div>
                   <div className="text-sm text-gray-600">Raised</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600">${(selectedCampaign.targetAmount / 100).toLocaleString()}</div>
+                  <div className="text-2xl font-bold text-blue-600">
+                    ${selectedCampaign.targetAmount ? (selectedCampaign.targetAmount / 100).toLocaleString() : '0'}
+                  </div>
                   <div className="text-sm text-gray-600">Goal</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-purple-600">{selectedCampaign.donorCount.toLocaleString()}</div>
+                  <div className="text-2xl font-bold text-purple-600">
+                    {selectedCampaign.donorCount ? selectedCampaign.donorCount.toLocaleString() : '0'}
+                  </div>
                   <div className="text-sm text-gray-600">Donors</div>
                 </div>
               </div>
@@ -322,11 +441,14 @@ export default function Donate() {
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div 
                     className="bg-green-600 h-2 rounded-full" 
-                    style={{ width: `${(selectedCampaign.currentAmount / selectedCampaign.targetAmount) * 100}%` }}
+                    style={{ 
+                      width: `${selectedCampaign.targetAmount > 0 ? (selectedCampaign.currentAmount / selectedCampaign.targetAmount) * 100 : 0}%` 
+                    }}
                   ></div>
                 </div>
                 <div className="text-sm text-gray-600 mt-1">
-                  {Math.round((selectedCampaign.currentAmount / selectedCampaign.targetAmount) * 100)}% funded
+                  {selectedCampaign.targetAmount > 0 ? 
+                    Math.round((selectedCampaign.currentAmount / selectedCampaign.targetAmount) * 100) : 0}% funded
                 </div>
               </div>
               <div className="mt-4 flex items-center gap-2">
@@ -439,22 +561,22 @@ export default function Donate() {
                 <Label>FHE Encrypted Data</Label>
                 <div className="bg-blue-50 p-3 rounded-md space-y-2">
                   <div className="text-sm">
-                    <strong>Encrypted Handles:</strong> {encryptedData.handles.length}
+                    <strong>Encrypted Handles:</strong> {encryptedData?.handles?.length || 0}
                   </div>
                   <div className="text-sm">
-                    <strong>Amount (encrypted):</strong> {encryptedData.amount} cents
+                    <strong>Amount (encrypted):</strong> {encryptedData?.amount || 0} cents
                   </div>
                   <div className="text-sm">
-                    <strong>Anonymous (encrypted):</strong> {encryptedData.isAnonymous ? 'Yes' : 'No'}
+                    <strong>Anonymous (encrypted):</strong> {encryptedData?.isAnonymous ? 'Yes' : 'No'}
                   </div>
                   <div className="text-xs text-gray-600 mt-2">
-                    <strong>Handle 1:</strong> {encryptedData.handlesHex[0]?.substring(0, 20)}...
+                    <strong>Handle 1:</strong> {encryptedData?.handles?.[0]?.substring(0, 20)}...
                   </div>
                   <div className="text-xs text-gray-600">
-                    <strong>Handle 2:</strong> {encryptedData.handlesHex[1]?.substring(0, 20)}...
+                    <strong>Handle 2:</strong> {encryptedData?.handles?.[1]?.substring(0, 20)}...
                   </div>
                   <div className="text-xs text-gray-600">
-                    <strong>Proof Length:</strong> {encryptedData.inputProof.length} bytes
+                    <strong>Proof Length:</strong> {encryptedData?.proof?.length || encryptedData?.inputProof?.length || 0} bytes
                   </div>
                 </div>
               </div>

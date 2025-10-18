@@ -9,6 +9,9 @@ export const convertHex = (handle: any): string => {
     hex = handle.startsWith('0x') ? handle : `0x${handle}`;
   } else if (Array.isArray(handle)) {
     hex = `0x${handle.map(b => b.toString(16).padStart(2, '0')).join('')}`;
+  } else {
+    // Handle other types by converting to string first
+    hex = `0x${handle.toString()}`;
   }
   
   // Ensure exactly 32 bytes (66 characters including 0x)

@@ -1,3 +1,5 @@
+import { CONTRACT_ADDRESS } from './contracts';
+
 // Environment configuration
 export const ENV_CONFIG = {
   // Network configuration
@@ -10,7 +12,7 @@ export const ENV_CONFIG = {
   
   // Contract configuration
   contract: {
-    address: process.env.VITE_SEPOLIA_CONTRACT_ADDRESS || '0x0000000000000000000000000000000000000000',
+    address: CONTRACT_ADDRESS,
     network: "sepolia"
   },
   

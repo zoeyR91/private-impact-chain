@@ -55,21 +55,21 @@ async function main() {
       description: "Providing access to clean drinking water in underserved communities worldwide",
       category: "Environment",
       targetAmount: 5000000, // $50,000 (public)
-      duration: 30 * 24 * 60 * 60 // 30 days in seconds
+      duration: 10 * 365 * 24 * 60 * 60 // 10 years in seconds
     },
     {
       name: "Education for All Foundation", 
       description: "Building schools and providing educational resources for children in developing countries",
       category: "Education",
       targetAmount: 6000000, // $60,000 (public)
-      duration: 45 * 24 * 60 * 60 // 45 days in seconds
+      duration: 10 * 365 * 24 * 60 * 60 // 10 years in seconds
     },
     {
       name: "Climate Action Network",
       description: "Supporting environmental conservation and sustainable development projects", 
       category: "Environment",
       targetAmount: 2000000, // $20,000 (public)
-      duration: 60 * 24 * 60 * 60 // 60 days in seconds
+      duration: 10 * 365 * 24 * 60 * 60 // 10 years in seconds
     }
   ];
   

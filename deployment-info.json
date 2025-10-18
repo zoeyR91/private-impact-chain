@@ -1,8 +1,8 @@
 {
-  "address": "0x45C88c32757F3E4A82e3FD9A3d12B5902dB5dd1a",
+  "address": "0x86FB334AC273999BC945B401ea85F03B9b0d6C51",
   "network": "sepolia",
-  "deployedAt": "2025-10-18T08:35:42.361Z",
-  "explorer": "https://sepolia.etherscan.io/address/0x45C88c32757F3E4A82e3FD9A3d12B5902dB5dd1a",
+  "deployedAt": "2025-10-18T09:53:22.043Z",
+  "explorer": "https://sepolia.etherscan.io/address/0x86FB334AC273999BC945B401ea85F03B9b0d6C51",
   "deployer": "0x4F922AfdBc66ca3253064c7e6D2911237586dA79",
   "verifier": "0x4F922AfdBc66ca3253064c7e6D2911237586dA79",
   "impactValidator": "0x4F922AfdBc66ca3253064c7e6D2911237586dA79"
