@@ -13,7 +13,7 @@ export const config = defaultWagmiConfig({
   metadata: {
     name: 'Private Impact Chain',
     description: 'FHE-Encrypted Charity Impact Tracking',
-    url: 'https://private-impact-chain.vercel.app',
+    url: typeof window !== 'undefined' ? window.location.origin : 'http://localhost:8080',
     icons: ['https://private-impact-chain.vercel.app/favicon.ico']
   },
   transports: {

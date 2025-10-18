@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAccount, useConnect, useDisconnect } from 'wagmi';
+import { useAccount, useDisconnect } from 'wagmi';
+import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
@@ -8,14 +9,14 @@ import { Heart, Shield, Eye, Lock, Zap, Users, Target, TrendingUp, ArrowRight, P
 
 const Index = () => {
   const { address, isConnected } = useAccount();
-  const { connect, connectors, isPending } = useConnect();
   const { disconnect } = useDisconnect();
+  const { open } = useWeb3Modal();
 
   const handleConnectWallet = () => {
     if (isConnected) {
       disconnect();
     } else {
-      connect({ connector: connectors[0] });
+      open();
     }
   };
 
@@ -55,10 +56,9 @@ const Index = () => {
               size="lg" 
               className="w-full sm:w-auto"
               onClick={handleConnectWallet}
-              disabled={isPending}
             >
               <Shield className="mr-2 h-5 w-5" />
-              {isPending ? 'Connecting...' : isConnected ? 'Disconnect Wallet' : 'Connect Wallet'}
+              {isConnected ? 'Disconnect Wallet' : 'Connect Wallet'}
             </Button>
             {isConnected && (
               <Button variant="outline" size="lg" className="w-full sm:w-auto">
