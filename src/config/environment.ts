@@ -6,7 +6,7 @@ export const ENV_CONFIG = {
   network: {
     chainId: 11155111, // Sepolia
     name: "Sepolia",
-    rpcUrl: process.env.VITE_SEPOLIA_RPC_URL || "https://1rpc.io/sepolia",
+    rpcUrl: import.meta.env.VITE_SEPOLIA_RPC_URL || "https://1rpc.io/sepolia",
     explorer: "https://sepolia.etherscan.io"
   },
   
@@ -18,8 +18,8 @@ export const ENV_CONFIG = {
   
   // API Keys
   apiKeys: {
-    etherscan: process.env.ETHERSCAN_API_KEY || "J8PU7AX1JX3RGEH1SNGZS4628BAH192Y3N",
-    walletConnect: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || "e08e99d213c331aa0fd00f625de06e66"
+    etherscan: import.meta.env.ETHERSCAN_API_KEY || "J8PU7AX1JX3RGEH1SNGZS4628BAH192Y3N",
+    walletConnect: import.meta.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || "e08e99d213c331aa0fd00f625de06e66"
   },
   
   // FHE Configuration
@@ -32,8 +32,8 @@ export const ENV_CONFIG = {
   
   // Development settings
   development: {
-    debug: process.env.NODE_ENV === 'development',
-    logLevel: process.env.VITE_LOG_LEVEL || 'info'
+    debug: import.meta.env.MODE === 'development',
+    logLevel: import.meta.env.VITE_LOG_LEVEL || 'info'
   }
 } as const;
 
@@ -44,7 +44,7 @@ export function validateEnvironment() {
     'VITE_SEPOLIA_CONTRACT_ADDRESS'
   ];
   
-  const missing = required.filter(key => !process.env[key]);
+  const missing = required.filter(key => !import.meta.env[key]);
   
   if (missing.length > 0) {
     console.warn('Missing environment variables:', missing);
@@ -59,8 +59,8 @@ export function validateEnvironment() {
 
 // Get environment-specific configuration
 export function getEnvironmentConfig() {
-  const isDevelopment = process.env.NODE_ENV === 'development';
-  const isProduction = process.env.NODE_ENV === 'production';
+  const isDevelopment = import.meta.env.MODE === 'development';
+  const isProduction = import.meta.env.MODE === 'production';
   
   return {
     isDevelopment,

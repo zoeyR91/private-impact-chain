@@ -1,5 +1,5 @@
 // Contract configuration and ABI
-export const CONTRACT_ADDRESS = process.env.VITE_SEPOLIA_CONTRACT_ADDRESS || '0x86FB334AC273999BC945B401ea85F03B9b0d6C51';
+export const CONTRACT_ADDRESS = import.meta.env.VITE_SEPOLIA_CONTRACT_ADDRESS || '0x86FB334AC273999BC945B401ea85F03B9b0d6C51';
 
 // Contract ABI for PrivateImpactChain
 export const CONTRACT_ABI = [
@@ -237,7 +237,7 @@ export const NETWORK_CONFIG = {
   sepolia: {
     chainId: 11155111,
     name: "Sepolia",
-    rpcUrl: process.env.VITE_SEPOLIA_RPC_URL || "https://1rpc.io/sepolia",
+    rpcUrl: import.meta.env.VITE_SEPOLIA_RPC_URL || "https://1rpc.io/sepolia",
     explorer: "https://sepolia.etherscan.io"
   }
 } as const;

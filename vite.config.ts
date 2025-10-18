@@ -15,7 +15,8 @@ export default defineConfig(() => ({
     },
   },
   define: { 
-    global: 'globalThis'  // Required for FHE SDK
+    global: 'globalThis',  // Required for FHE SDK
+    'process.env': 'import.meta.env'  // Polyfill for process.env
   },
   optimizeDeps: { 
     include: [

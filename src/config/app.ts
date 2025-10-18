@@ -86,7 +86,7 @@ export const APP_CONFIG = {
   
   // Analytics configuration
   analytics: {
-    enabled: process.env.NODE_ENV === 'production',
+    enabled: import.meta.env.MODE === 'production',
     trackEvents: [
       'campaign_created',
       'donation_made',
