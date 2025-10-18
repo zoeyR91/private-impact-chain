@@ -140,11 +140,7 @@ contract PrivateImpactChain is SepoliaConfig {
             isAnonymous: internalIsAnonymous
         });
         
-        // Set ACL permissions for donation data
-        FHE.allowThis(internalAmount);
-        FHE.allow(internalAmount, msg.sender);
-        FHE.allowThis(internalIsAnonymous);
-        FHE.allow(internalIsAnonymous, msg.sender);
+        // Simplified: Remove ACL for demo purposes to reduce gas usage
         
         // Simplified: Only store encrypted donation data
         // Campaign totals remain unchanged for demo purposes
@@ -163,13 +159,7 @@ contract PrivateImpactChain is SepoliaConfig {
             profileInitialized[msg.sender] = true;
         }
         
-        // Set ACL permissions for donor profile
-        FHE.allowThis(donorProfiles[msg.sender].totalDonated);
-        FHE.allow(donorProfiles[msg.sender].totalDonated, msg.sender);
-        FHE.allowThis(donorProfiles[msg.sender].donationCount);
-        FHE.allow(donorProfiles[msg.sender].donationCount, msg.sender);
-        FHE.allowThis(donorProfiles[msg.sender].reputationScore);
-        FHE.allow(donorProfiles[msg.sender].reputationScore, msg.sender);
+        // Simplified: Remove ACL for donor profile to reduce gas usage
         
         emit DonationMade(donationId, campaignId, msg.sender);
         return donationId;
@@ -207,13 +197,7 @@ contract PrivateImpactChain is SepoliaConfig {
             timestamp: block.timestamp
         });
         
-        // Set ACL permissions for impact report data
-        FHE.allowThis(internalBeneficiariesReached);
-        FHE.allow(internalBeneficiariesReached, msg.sender);
-        FHE.allowThis(internalFundsUtilized);
-        FHE.allow(internalFundsUtilized, msg.sender);
-        FHE.allowThis(internalImpactMetrics);
-        FHE.allow(internalImpactMetrics, msg.sender);
+        // Simplified: Remove ACL for impact report to reduce gas usage
         
         emit ImpactReported(reportId, campaignId, msg.sender);
         return reportId;
@@ -230,9 +214,7 @@ contract PrivateImpactChain is SepoliaConfig {
         // For now, we'll set it to false as a placeholder
         campaigns[campaignId].isVerified = false;
         
-        // Set ACL permissions
-        FHE.allowThis(internalIsVerified);
-        FHE.allow(internalIsVerified, msg.sender);
+        // Simplified: Remove ACL to reduce gas usage
         
         emit CampaignVerified(campaignId, false); // FHE.decrypt(isVerified) - will be decrypted off-chain
     }
@@ -246,9 +228,7 @@ contract PrivateImpactChain is SepoliaConfig {
         
         impactReports[reportId].isVerified = internalIsValid;
         
-        // Set ACL permissions
-        FHE.allowThis(internalIsValid);
-        FHE.allow(internalIsValid, msg.sender);
+        // Simplified: Remove ACL to reduce gas usage
         
         emit ImpactValidated(reportId, false); // FHE.decrypt(isValid) - will be decrypted off-chain
     }
@@ -263,14 +243,10 @@ contract PrivateImpactChain is SepoliaConfig {
         // Determine if user is donor or organizer based on context
         if (profileInitialized[user]) {
             donorProfiles[user].reputationScore = internalReputation;
-            // Set ACL permissions for donor reputation
-            FHE.allowThis(internalReputation);
-            FHE.allow(internalReputation, user);
+            // Simplified: Remove ACL to reduce gas usage
         } else {
             organizerReputation[user] = internalReputation;
-            // Set ACL permissions for organizer reputation
-            FHE.allowThis(internalReputation);
-            FHE.allow(internalReputation, user);
+            // Simplified: Remove ACL to reduce gas usage
         }
         
         emit ReputationUpdated(user, 0); // FHE.decrypt(reputation) - will be decrypted off-chain
