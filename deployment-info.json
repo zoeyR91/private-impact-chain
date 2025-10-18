@@ -1,7 +1,24 @@
 {
   "contractAddress": "0x0000000000000000000000000000000000000000",
-  "deployer": "0x0000000000000000000000000000000000000000",
+  "deployer": "0x46a0E9DC4ee067f81777124ec881Bb47e4884141",
   "network": "sepolia",
-  "timestamp": "2024-10-18T15:15:00.000Z",
-  "note": "Mock deployment - requires FHEVM network setup for actual deployment"
+  "timestamp": "2025-10-18T07:22:47.191Z",
+  "note": "Contract deployment requires FHEVM network setup for actual deployment",
+  "privateKey": "602f15b250...",
+  "rpcUrl": "https://1rpc.io/sepolia",
+  "balance": "0.24094997106953608",
+  "deploymentStatus": "Ready for FHEVM deployment",
+  "fheFeatures": [
+    "Encrypted campaign creation",
+    "Encrypted donation processing",
+    "Encrypted impact reporting",
+    "Encrypted reputation system",
+    "ACL permissions management"
+  ],
+  "nextSteps": [
+    "Configure FHEVM network",
+    "Deploy to FHEVM testnet",
+    "Update contract address in frontend",
+    "Test FHE encryption/decryption flow"
+  ]
 }
