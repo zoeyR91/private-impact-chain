@@ -77,6 +77,34 @@ export const CONTRACT_ABI = [
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "campaignCounter",
+    "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+    "name": "campaigns",
+    "outputs": [
+      {"internalType": "uint256", "name": "campaignId", "type": "uint256"},
+      {"internalType": "uint256", "name": "targetAmount", "type": "uint256"},
+      {"internalType": "uint256", "name": "currentAmount", "type": "uint256"},
+      {"internalType": "uint256", "name": "donorCount", "type": "uint256"},
+      {"internalType": "uint256", "name": "impactScore", "type": "uint256"},
+      {"internalType": "bool", "name": "isActive", "type": "bool"},
+      {"internalType": "bool", "name": "isVerified", "type": "bool"},
+      {"internalType": "string", "name": "name", "type": "string"},
+      {"internalType": "string", "name": "description", "type": "string"},
+      {"internalType": "string", "name": "category", "type": "string"},
+      {"internalType": "address", "name": "organizer", "type": "address"},
+      {"internalType": "uint256", "name": "startTime", "type": "uint256"},
+      {"internalType": "uint256", "name": "endTime", "type": "uint256"}
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [{"internalType": "uint256", "name": "campaignId", "type": "uint256"}],
     "name": "getCampaignInfo",
     "outputs": [
