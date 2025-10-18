@@ -1,90 +1,191 @@
-import { DonationHero } from "@/components/DonationHero";
-import { CampaignCard } from "@/components/CampaignCard";
-import { Header } from "@/components/Header";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Button } from '../components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { Badge } from '../components/ui/badge';
+import { Heart, Shield, Eye, Lock, Zap, Users, Target, TrendingUp, ArrowRight, Play, Droplets } from 'lucide-react';
 
 const Index = () => {
-  // Mock campaign data
-  const campaigns = [
-    {
-      name: "Clean Water Initiative",
-      description: "Providing access to clean drinking water in underserved communities worldwide",
-      totalRaised: 2850000,
-      goal: 5000000,
-      donorCount: 12847,
-      image: "https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=400&h=300&fit=crop"
-    },
-    {
-      name: "Education for All Foundation",
-      description: "Building schools and providing educational resources for children in developing countries",
-      totalRaised: 3200000,
-      goal: 6000000,
-      donorCount: 15632,
-      image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&h=300&fit=crop"
-    },
-    {
-      name: "Climate Action Network",
-      description: "Supporting environmental conservation and sustainable development projects",
-      totalRaised: 890000,
-      goal: 2000000,
-      donorCount: 4521,
-      image: "https://images.unsplash.com/photo-1541872705-1f73c6400ec9?w=400&h=300&fit=crop"
-    }
-  ];
-
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Header */}
-      <Header />
-      
-      {/* Hero Section */}
-      <div className="pt-20">
-        <DonationHero />
+      <div className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <Shield className="h-8 w-8 text-blue-600" />
+              <h1 className="text-2xl font-bold text-gray-900">Private Impact Chain</h1>
+            </div>
+            <Badge variant="outline" className="flex items-center gap-2">
+              <Lock className="h-4 w-4" />
+              FHE Encrypted
+            </Badge>
+          </div>
+        </div>
       </div>
       
-      {/* Campaigns Section */}
-      <section className="py-20 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-              Active Campaigns
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Support charitable causes you believe in while maintaining complete privacy. 
-              All donations are encrypted and anonymous.
+      {/* Hero Section */}
+      <div className="max-w-7xl mx-auto px-4 py-20">
+        <div className="text-center space-y-8">
+          <div className="space-y-4">
+            <h1 className="text-5xl md:text-6xl font-bold text-gray-900">
+              FHE Donation Demo
+            </h1>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Experience the power of Fully Homomorphic Encryption in charity donations. 
+              FREE demo with test USDC - no real money required!
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-            {campaigns.map((campaign, index) => (
-              <CampaignCard
-                key={index}
-                {...campaign}
-              />
-            ))}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/demo">
+              <Button size="lg" className="w-full sm:w-auto">
+                <Play className="mr-2 h-5 w-5" />
+                Try FHE Demo
+              </Button>
+            </Link>
+            <Button variant="outline" size="lg" className="w-full sm:w-auto">
+              <Droplets className="mr-2 h-5 w-5" />
+              Get Test USDC
+            </Button>
           </div>
         </div>
-      </section>
+      </div>
       
-      {/* Call to Action Section */}
-      <section className="py-20 px-6 bg-muted/30">
-        <div className="max-w-7xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-            Ready to Make a Difference?
+      {/* Features Section */}
+      <div className="max-w-7xl mx-auto px-4 py-20">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            FHE Encryption Features
           </h2>
-          <p className="text-xl text-muted-foreground mb-12 max-w-3xl mx-auto">
-            Connect your wallet and start making anonymous charitable donations today. 
-            Your privacy is guaranteed, your impact is real.
+          <p className="text-xl text-gray-600">
+            FREE demo showcasing donation amount encryption and decryption
           </p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <Card>
+            <CardHeader>
+              <Lock className="h-12 w-12 text-blue-600 mb-4" />
+              <CardTitle>Amount Encryption</CardTitle>
+              <CardDescription>
+                Donation amounts are encrypted with FHE before blockchain storage
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2 text-sm text-gray-600">
+                <li>• Amount encrypted with euint32</li>
+                <li>• Anonymous status encrypted with ebool</li>
+                <li>• Zero-knowledge proof generation</li>
+                <li>• On-chain encrypted storage</li>
+              </ul>
+            </CardContent>
+          </Card>
           
-          <div className="flex justify-center">
-            <div className="text-center">
-              <p className="text-sm text-muted-foreground mb-4">
-                Click "Connect Wallet & Donate" in the hero section above to get started
-              </p>
+          <Card>
+            <CardHeader>
+              <Shield className="h-12 w-12 text-green-600 mb-4" />
+              <CardTitle>Privacy Protection</CardTitle>
+              <CardDescription>
+                Only you can decrypt your donation data with your private key
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2 text-sm text-gray-600">
+                <li>• User-controlled decryption</li>
+                <li>• Private key management</li>
+                <li>• ACL permissions</li>
+                <li>• Complete data privacy</li>
+              </ul>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader>
+              <Zap className="h-12 w-12 text-purple-600 mb-4" />
+              <CardTitle>Real-time Demo</CardTitle>
+              <CardDescription>
+                Watch FHE encryption/decryption process with test USDC
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2 text-sm text-gray-600">
+                <li>• Live encryption process</li>
+                <li>• Real-time decryption</li>
+                <li>• Process logs</li>
+                <li>• No real money required</li>
+              </ul>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+      
+      {/* Demo Section */}
+      <div className="max-w-7xl mx-auto px-4 py-20">
+        <Card className="bg-gradient-to-r from-blue-50 to-indigo-50">
+          <CardHeader className="text-center">
+            <CardTitle className="text-3xl font-bold text-gray-900">
+              Try the FHE Demo
+            </CardTitle>
+            <CardDescription className="text-lg">
+              Experience donation encryption and decryption with test USDC
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="text-center space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+              <div className="space-y-2">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
+                  <Lock className="h-8 w-8 text-blue-600" />
+                </div>
+                <h3 className="font-semibold">1. Encrypt</h3>
+                <p className="text-sm text-gray-600">Donation amount encrypted with FHE</p>
+              </div>
+              <div className="space-y-2">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+                  <Shield className="h-8 w-8 text-green-600" />
+                </div>
+                <h3 className="font-semibold">2. Store</h3>
+                <p className="text-sm text-gray-600">Encrypted data stored on blockchain</p>
+              </div>
+              <div className="space-y-2">
+                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto">
+                  <Eye className="h-8 w-8 text-purple-600" />
+                </div>
+                <h3 className="font-semibold">3. Decrypt</h3>
+                <p className="text-sm text-gray-600">Decrypt with your private key</p>
+              </div>
             </div>
+            
+            <Link to="/demo">
+              <Button size="lg" className="w-full sm:w-auto">
+                <Play className="mr-2 h-5 w-5" />
+                Start FHE Demo
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
+      
+      {/* Footer */}
+      <div className="bg-gray-900 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <div className="flex items-center justify-center space-x-2 mb-4">
+            <Shield className="h-6 w-6 text-blue-400" />
+            <h3 className="text-xl font-bold">Private Impact Chain</h3>
+          </div>
+          <p className="text-gray-400 mb-4">
+            Privacy-preserving charity platform with FHE encryption
+          </p>
+          <div className="flex items-center justify-center gap-4 text-sm text-gray-400">
+            <span>Built with FHE Technology</span>
+            <span>•</span>
+            <span>Test USDC Demo</span>
+            <span>•</span>
+            <span>Open Source</span>
           </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 };
