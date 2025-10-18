@@ -15,8 +15,8 @@ export default defineConfig(() => ({
       name: 'valtio-vanilla-polyfill',
       resolveId(id) {
         if (id === 'valtio/vanilla') {
-          // Return the full path to valtio module
-          return require.resolve('valtio');
+          // Use import.meta.resolve for ES modules
+          return 'valtio';
         }
         return null;
       }
@@ -25,6 +25,7 @@ export default defineConfig(() => ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      "valtio/vanilla": "valtio",
     },
   },
   define: { 
