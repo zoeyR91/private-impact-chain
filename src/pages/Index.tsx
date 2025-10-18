@@ -38,15 +38,13 @@ const Index = () => {
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/demo">
-              <Button size="lg" className="w-full sm:w-auto">
-                <Play className="mr-2 h-5 w-5" />
-                Try FHE Demo
-              </Button>
-            </Link>
+            <Button size="lg" className="w-full sm:w-auto">
+              <Shield className="mr-2 h-5 w-5" />
+              Connect Wallet
+            </Button>
             <Button variant="outline" size="lg" className="w-full sm:w-auto">
-              <Droplets className="mr-2 h-5 w-5" />
-              Get Test USDC
+              <Heart className="mr-2 h-5 w-5" />
+              Make Donation
             </Button>
           </div>
         </div>
@@ -156,13 +154,11 @@ const Index = () => {
               </div>
             </div>
             
-            <Link to="/demo">
-              <Button size="lg" className="w-full sm:w-auto">
-                <Play className="mr-2 h-5 w-5" />
-                Start FHE Demo
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
+            <Button size="lg" className="w-full sm:w-auto">
+              <Shield className="mr-2 h-5 w-5" />
+              Start Donating
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
           </CardContent>
         </Card>
       </div>

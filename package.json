@@ -9,6 +9,9 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
+    "deploy": "hardhat run scripts/deploy.cjs --network sepolia",
+    "deploy:local": "hardhat run scripts/deploy.cjs --network localhost",
+    "test:fhe": "node scripts/test-fhe.cjs",
     "postinstall": "echo 'Dependencies installed successfully'"
   },
   "dependencies": {
