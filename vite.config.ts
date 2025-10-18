@@ -15,7 +15,8 @@ export default defineConfig(() => ({
       name: 'valtio-vanilla-polyfill',
       resolveId(id) {
         if (id === 'valtio/vanilla') {
-          return 'valtio';
+          // Return the full path to valtio module
+          return require.resolve('valtio');
         }
         return null;
       }
