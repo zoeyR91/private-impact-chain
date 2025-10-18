@@ -20,9 +20,8 @@ const CONTRACT_ABI = [
       {"internalType": "string", "name": "_name", "type": "string"},
       {"internalType": "string", "name": "_description", "type": "string"},
       {"internalType": "string", "name": "_category", "type": "string"},
-      {"internalType": "bytes32", "name": "_targetAmount", "type": "bytes32"},
-      {"internalType": "uint256", "name": "_duration", "type": "uint256"},
-      {"internalType": "bytes", "name": "inputProof", "type": "bytes"}
+      {"internalType": "uint256", "name": "_targetAmount", "type": "uint256"},
+      {"internalType": "uint256", "name": "_duration", "type": "uint256"}
     ],
     "name": "createCampaign",
     "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
@@ -105,16 +104,18 @@ export function useContract() {
     targetAmount: number,
     duration: number
   ) => {
-    if (!instance || !address) {
-      throw new Error('FHE instance or wallet not initialized');
+    if (!address) {
+      throw new Error('Wallet not initialized');
     }
 
-    const encryptedInput = await createCampaignInput(
-      instance,
-      CONTRACT_ADDRESS,
-      address,
-      targetAmount
-    );
+    // Campaign创建不使用FHE加密，直接使用普通参数
+    console.log('📝 Creating campaign without FHE encryption:', {
+      name,
+      description,
+      category,
+      targetAmount,
+      duration
+    });
 
     const tx = await writeContractAsync({
       address: CONTRACT_ADDRESS as `0x${string}`,
@@ -124,9 +125,8 @@ export function useContract() {
         name,
         description,
         category,
-        encryptedInput.handles[0],
-        duration,
-        encryptedInput.inputProof
+        targetAmount,
+        duration
       ]
     });
 

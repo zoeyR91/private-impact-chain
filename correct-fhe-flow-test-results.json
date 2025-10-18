@@ -1,0 +1,24 @@
+{
+  "timestamp": "2025-10-18T07:35:16.023Z",
+  "strategy": "Campaign公开 + 捐赠FHE加密",
+  "campaigns": {
+    "count": 2,
+    "totalTarget": 11000000,
+    "averageGas": 150000,
+    "encryption": "None (Public)"
+  },
+  "donations": {
+    "count": 3,
+    "totalAmount": 850000,
+    "averageGas": 400000,
+    "encryption": "FHE Encrypted"
+  },
+  "fheFeatures": [
+    "Campaign data: Public transparency",
+    "Donation amounts: FHE encrypted",
+    "Anonymous status: FHE encrypted",
+    "User privacy: Complete protection",
+    "Gas optimization: Balanced approach"
+  ],
+  "status": "SUCCESS"
+}

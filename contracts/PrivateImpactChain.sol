@@ -8,13 +8,13 @@ contract PrivateImpactChain is SepoliaConfig {
     using FHE for *;
     
     struct ImpactCampaign {
-        euint32 campaignId;
-        euint32 targetAmount;
-        euint32 currentAmount;
-        euint32 donorCount;
-        euint32 impactScore;
-        ebool isActive;
-        ebool isVerified;
+        uint256 campaignId;
+        uint256 targetAmount;  // 公开的目标金额
+        uint256 currentAmount; // 公开的当前金额
+        uint256 donorCount;    // 公开的捐赠者数量
+        uint256 impactScore;   // 公开的影响分数
+        bool isActive;         // 公开的活动状态
+        bool isVerified;       // 公开的验证状态
         string name;
         string description;
         string category;
@@ -84,26 +84,23 @@ contract PrivateImpactChain is SepoliaConfig {
         string memory _name,
         string memory _description,
         string memory _category,
-        externalEuint32 _targetAmount,
-        uint256 _duration,
-        bytes calldata inputProof
+        uint256 _targetAmount,  // 使用普通uint256，不加密
+        uint256 _duration
     ) public returns (uint256) {
         require(bytes(_name).length > 0, "Campaign name cannot be empty");
         require(_duration > 0, "Duration must be positive");
+        require(_targetAmount > 0, "Target amount must be positive");
         
         uint256 campaignId = campaignCounter++;
         
-        // Convert external encrypted target amount to internal euint32
-        euint32 encryptedTargetAmount = FHE.fromExternal(_targetAmount, inputProof);
-        
         campaigns[campaignId] = ImpactCampaign({
-            campaignId: FHE.asEuint32(campaignId),
-            targetAmount: encryptedTargetAmount,
-            currentAmount: FHE.asEuint32(0),
-            donorCount: FHE.asEuint32(0),
-            impactScore: FHE.asEuint32(0),
-            isActive: FHE.asEbool(true),
-            isVerified: FHE.asEbool(false),
+            campaignId: campaignId,
+            targetAmount: _targetAmount,  // 公开存储目标金额
+            currentAmount: 0,            // 公开存储当前金额
+            donorCount: 0,              // 公开存储捐赠者数量
+            impactScore: 0,             // 公开存储影响分数
+            isActive: true,            // 公开存储活动状态
+            isVerified: false,          // 公开存储验证状态
             name: _name,
             description: _description,
             category: _category,
@@ -111,10 +108,6 @@ contract PrivateImpactChain is SepoliaConfig {
             startTime: block.timestamp,
             endTime: block.timestamp + _duration
         });
-        
-        // Set ACL permissions for the encrypted target amount
-        FHE.allowThis(encryptedTargetAmount);
-        FHE.allow(encryptedTargetAmount, msg.sender);
         
         emit CampaignCreated(campaignId, msg.sender, _name);
         return campaignId;
