@@ -21,12 +21,12 @@ export default defineConfig(() => ({
     include: [
       '@zama-fhe/relayer-sdk/bundle',  // Pre-build FHE SDK
       'valtio', 
-      'valtio/vanilla'
+      'derive-valtio'
     ]
   },
   build: {
     rollupOptions: {
-      external: ['valtio/vanilla']
+      external: []
     }
   }
 }));
