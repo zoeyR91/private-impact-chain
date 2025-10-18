@@ -8,23 +8,11 @@ export default defineConfig(() => ({
     host: "::",
     port: 8080,
   },
-  plugins: [
-    react(),
-    // Add a plugin to handle valtio/vanilla imports
-    {
-      name: 'valtio-vanilla-polyfill',
-      resolveId(id) {
-        if (id === 'valtio/vanilla') {
-          // Return the actual valtio/vanilla module path
-          return 'valtio/vanilla';
-        }
-        return null;
-      }
-    }
-  ],
+  plugins: [react()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      "valtio/vanilla": "valtio",
     },
   },
   define: { 
