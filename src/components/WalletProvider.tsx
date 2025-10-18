@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { config } from '../lib/wallet';
@@ -9,6 +9,8 @@ const queryClient = new QueryClient({
     queries: {
       retry: 3,
       retryDelay: 1000,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes
     },
   },
 });
@@ -18,8 +20,11 @@ interface WalletProviderProps {
 }
 
 export function WalletProvider({ children }: WalletProviderProps) {
+  // Memoize the config to prevent re-creation
+  const memoizedConfig = useMemo(() => config, []);
+
   return (
-    <WagmiProvider config={config}>
+    <WagmiProvider config={memoizedConfig}>
       <QueryClientProvider client={queryClient}>
         {children}
       </QueryClientProvider>

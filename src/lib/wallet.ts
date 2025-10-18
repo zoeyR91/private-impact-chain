@@ -2,6 +2,7 @@ import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
 import { WagmiProvider } from 'wagmi'
 import { sepolia } from 'wagmi/chains'
 import { http } from 'viem'
+import { getRpcUrl } from './rpc-config'
 
 // Using the provided WalletConnect Project ID
 export const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID || 'e08e99d213c331aa0fd00f625de06e66'
@@ -17,20 +18,23 @@ export const config = defaultWagmiConfig({
     icons: ['https://private-impact-chain.vercel.app/favicon.ico']
   },
   transports: {
-    [sepolia.id]: http(import.meta.env.VITE_SEPOLIA_RPC_URL || 'https://1rpc.io/sepolia'),
+    [sepolia.id]: http(getRpcUrl()),
   }
 })
 
-// Create Web3Modal instance
-createWeb3Modal({
-  wagmiConfig: config,
-  projectId,
-  themeMode: 'light',
-  themeVariables: {
-    '--w3m-color-mix': '#10B981',
-    '--w3m-color-mix-strength': 40
-  }
-})
+// Create Web3Modal instance only once
+let web3Modal: any = null;
+if (!web3Modal) {
+  web3Modal = createWeb3Modal({
+    wagmiConfig: config,
+    projectId,
+    themeMode: 'light',
+    themeVariables: {
+      '--w3m-color-mix': '#10B981',
+      '--w3m-color-mix-strength': 40
+    }
+  });
+}
 
 export const supportedChains = [sepolia];
 
@@ -41,5 +45,5 @@ export const contractAddresses = {
 
 // RPC URLs for Sepolia testnet
 export const rpcUrls = {
-  [sepolia.id]: import.meta.env.VITE_SEPOLIA_RPC_URL || 'https://1rpc.io/sepolia',
+  [sepolia.id]: getRpcUrl(),
 };
