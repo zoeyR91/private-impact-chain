@@ -20,20 +20,7 @@ export default defineConfig(() => ({
   },
   optimizeDeps: { 
     include: [
-      '@zama-fhe/relayer-sdk/bundle',  // Pre-build FHE SDK
-      'valtio',
-      'derive-valtio'
+      '@zama-fhe/relayer-sdk/bundle'  // Pre-build FHE SDK
     ]
-  },
-  build: {
-    rollupOptions: {
-      external: (id) => {
-        // Externalize valtio/vanilla to avoid bundling issues
-        if (id === 'valtio/vanilla') {
-          return true;
-        }
-        return false;
-      }
-    }
   }
 }));
