@@ -18,6 +18,15 @@ export default defineConfig(() => ({
     global: 'globalThis'  // Required for FHE SDK
   },
   optimizeDeps: { 
-    include: ['@zama-fhe/relayer-sdk/bundle']  // Pre-build FHE SDK
+    include: [
+      '@zama-fhe/relayer-sdk/bundle',  // Pre-build FHE SDK
+      'valtio', 
+      'valtio/vanilla'
+    ]
+  },
+  build: {
+    rollupOptions: {
+      external: ['valtio/vanilla']
+    }
   }
 }));
