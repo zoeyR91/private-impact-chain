@@ -4,9 +4,9 @@ A fully homomorphic encryption (FHE) powered charity impact tracking platform th
 
 ## 🎥 Demo Video
 
-[![Private Impact Chain Demo](https://img.shields.io/badge/📹_Watch_Demo-Video-blue)](./private-impact-compressed.mp4)
+[![Private Impact Chain Demo](https://img.shields.io/badge/📹_Watch_Demo-Video-blue)](./private-impact.mp4)
 
-**Demo Video**: [private-impact-compressed.mp4](./private-impact-compressed.mp4) (3.8MB, High Quality)
+**Demo Video**: [private-impact-compressed.mp4](./private-impact.mp4) (3.8MB, High Quality)
 
 ## 🏗️ Smart Contract
 
