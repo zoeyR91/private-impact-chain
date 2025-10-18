@@ -8,11 +8,22 @@ export default defineConfig(() => ({
     host: "::",
     port: 8080,
   },
-  plugins: [react()],
+  plugins: [
+    react(),
+    // Add a plugin to handle valtio/vanilla imports
+    {
+      name: 'valtio-vanilla-polyfill',
+      resolveId(id) {
+        if (id === 'valtio/vanilla') {
+          return 'valtio';
+        }
+        return null;
+      }
+    }
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
-      "valtio/vanilla": "valtio",
     },
   },
   define: { 
@@ -20,14 +31,7 @@ export default defineConfig(() => ({
   },
   optimizeDeps: { 
     include: [
-      '@zama-fhe/relayer-sdk/bundle',  // Pre-build FHE SDK
-      'valtio',
-      'derive-valtio'
+      '@zama-fhe/relayer-sdk/bundle'  // Pre-build FHE SDK
     ]
-  },
-  build: {
-    rollupOptions: {
-      external: []
-    }
   }
 }));
