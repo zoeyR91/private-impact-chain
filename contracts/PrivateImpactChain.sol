@@ -34,6 +34,14 @@ contract PrivateImpactChain is SepoliaConfig {
         ebool isAnonymous;
     }
     
+    // Simplified structure for minimal gas usage
+    struct EncryptedDonation {
+        euint32 amount;
+        ebool isAnonymous;
+        address donor;
+        uint256 timestamp;
+    }
+    
     struct ImpactReport {
         euint32 reportId;
         euint32 campaignId;
@@ -57,6 +65,7 @@ contract PrivateImpactChain is SepoliaConfig {
     
     mapping(uint256 => ImpactCampaign) public campaigns;
     mapping(uint256 => Donation) public donations;
+    mapping(uint256 => EncryptedDonation) public encryptedDonations;
     mapping(uint256 => ImpactReport) public impactReports;
     mapping(address => DonorProfile) public donorProfiles;
     mapping(address => euint32) public organizerReputation;
@@ -131,19 +140,14 @@ contract PrivateImpactChain is SepoliaConfig {
         euint32 internalAmount = FHE.fromExternal(amount, inputProof);
         ebool internalIsAnonymous = FHE.fromExternal(isAnonymous, inputProof);
         
-        // Ultra-simplified: Only store the essential encrypted data
-        // Remove all complex FHE operations to minimize gas usage
-        donations[donationId] = Donation({
-            donationId: FHE.asEuint32(uint32(donationId)),
+        // Minimal FHE storage: Only store the encrypted amount and anonymity
+        // Remove complex structure creation to minimize gas usage
+        encryptedDonations[donationId] = EncryptedDonation({
             amount: internalAmount,
-            campaignId: FHE.asEuint32(uint32(campaignId)),
+            isAnonymous: internalIsAnonymous,
             donor: msg.sender,
-            timestamp: block.timestamp,
-            isAnonymous: internalIsAnonymous
+            timestamp: block.timestamp
         });
-        
-        // Remove all other FHE operations to minimize gas usage
-        // Focus only on core FHE encryption of donation data
         
         emit DonationMade(donationId, campaignId, msg.sender);
         return donationId;
