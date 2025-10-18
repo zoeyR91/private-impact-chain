@@ -470,20 +470,23 @@ export default function Donate() {
           <CardHeader>
             <CardTitle>Make a Donation</CardTitle>
             <CardDescription>
-              Your donation amount will be encrypted with FHE for privacy
+              This is a FREE FHE demonstration - no real money will be spent. Your donation amount will be encrypted with FHE for privacy.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="amount">Donation Amount (USD)</Label>
+              <Label htmlFor="amount">Donation Amount (USD) - FREE Demo</Label>
               <Input
                 id="amount"
                 type="number"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                placeholder="Enter amount"
+                placeholder="Enter amount (no real money will be charged)"
                 disabled={isProcessing}
               />
+              <p className="text-sm text-green-600 font-medium">
+                💡 This is a FREE demonstration - no real money will be spent!
+              </p>
             </div>
 
             <div className="flex items-center space-x-2">
