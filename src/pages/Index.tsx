@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAccount, useDisconnect } from 'wagmi';
-import { useWeb3Modal } from '@web3modal/wagmi/react';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
@@ -10,15 +10,6 @@ import { Heart, Shield, Eye, Lock, Zap, Users, Target, TrendingUp, ArrowRight, P
 const Index = () => {
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
-  const { open } = useWeb3Modal();
-
-  const handleConnectWallet = () => {
-    if (isConnected) {
-      disconnect();
-    } else {
-      open();
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -52,14 +43,7 @@ const Index = () => {
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              size="lg" 
-              className="w-full sm:w-auto"
-              onClick={handleConnectWallet}
-            >
-              <Shield className="mr-2 h-5 w-5" />
-              {isConnected ? 'Disconnect Wallet' : 'Connect Wallet'}
-            </Button>
+            <ConnectButton />
             {isConnected && (
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link to="/donate">

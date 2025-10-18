@@ -12,7 +12,6 @@ export default defineConfig(() => ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
-      "valtio/vanilla": "valtio",
     },
   },
   define: { 
@@ -20,9 +19,7 @@ export default defineConfig(() => ({
   },
   optimizeDeps: { 
     include: [
-      '@zama-fhe/relayer-sdk/bundle',  // Pre-build FHE SDK
-      'valtio',
-      'valtio/vanilla'
+      '@zama-fhe/relayer-sdk/bundle'  // Pre-build FHE SDK
     ]
   }
 }));
