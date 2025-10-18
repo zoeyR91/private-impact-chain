@@ -12,84 +12,9 @@ import {
   decryptImpactReportData,
   decryptDonorProfileData
 } from '../lib/fheUtils';
+import { CONTRACT_ADDRESS, CONTRACT_ABI } from '../config/contracts';
 
-// Contract ABI - This should match your deployed contract
-const CONTRACT_ABI = [
-  {
-    "inputs": [
-      {"internalType": "string", "name": "_name", "type": "string"},
-      {"internalType": "string", "name": "_description", "type": "string"},
-      {"internalType": "string", "name": "_category", "type": "string"},
-      {"internalType": "uint256", "name": "_targetAmount", "type": "uint256"},
-      {"internalType": "uint256", "name": "_duration", "type": "uint256"}
-    ],
-    "name": "createCampaign",
-    "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {"internalType": "uint256", "name": "campaignId", "type": "uint256"},
-      {"internalType": "bytes32", "name": "amount", "type": "bytes32"},
-      {"internalType": "bytes32", "name": "isAnonymous", "type": "bytes32"},
-      {"internalType": "bytes", "name": "inputProof", "type": "bytes"}
-    ],
-    "name": "makeDonation",
-    "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {"internalType": "uint256", "name": "campaignId", "type": "uint256"},
-      {"internalType": "bytes32", "name": "beneficiariesReached", "type": "bytes32"},
-      {"internalType": "bytes32", "name": "fundsUtilized", "type": "bytes32"},
-      {"internalType": "bytes32", "name": "impactMetrics", "type": "bytes32"},
-      {"internalType": "string", "name": "reportHash", "type": "string"},
-      {"internalType": "string", "name": "evidenceHash", "type": "string"},
-      {"internalType": "bytes", "name": "inputProof", "type": "bytes"}
-    ],
-    "name": "submitImpactReport",
-    "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {"internalType": "uint256", "name": "campaignId", "type": "uint256"}
-    ],
-    "name": "getCampaignInfo",
-    "outputs": [
-      {"internalType": "string", "name": "name", "type": "string"},
-      {"internalType": "string", "name": "description", "type": "string"},
-      {"internalType": "string", "name": "category", "type": "string"},
-      {"internalType": "address", "name": "organizer", "type": "address"},
-      {"internalType": "uint256", "name": "startTime", "type": "uint256"},
-      {"internalType": "uint256", "name": "endTime", "type": "uint256"}
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {"internalType": "uint256", "name": "campaignId", "type": "uint256"}
-    ],
-    "name": "getCampaignEncryptedData",
-    "outputs": [
-      {"internalType": "bytes32", "name": "targetAmount", "type": "bytes32"},
-      {"internalType": "bytes32", "name": "currentAmount", "type": "bytes32"},
-      {"internalType": "bytes32", "name": "donorCount", "type": "bytes32"},
-      {"internalType": "bytes32", "name": "impactScore", "type": "bytes32"},
-      {"internalType": "bytes32", "name": "isActive", "type": "bytes32"},
-      {"internalType": "bytes32", "name": "isVerified", "type": "bytes32"}
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  }
-];
-
-const CONTRACT_ADDRESS = process.env.VITE_SEPOLIA_CONTRACT_ADDRESS || '0x0000000000000000000000000000000000000000';
+// All contract configuration is now imported from config files
 
 export function useContract() {
   const { address } = useAccount();

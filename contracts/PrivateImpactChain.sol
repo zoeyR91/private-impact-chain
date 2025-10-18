@@ -9,12 +9,12 @@ contract PrivateImpactChain is SepoliaConfig {
     
     struct ImpactCampaign {
         uint256 campaignId;
-        uint256 targetAmount;  // 公开的目标金额
-        uint256 currentAmount; // 公开的当前金额
-        uint256 donorCount;    // 公开的捐赠者数量
-        uint256 impactScore;   // 公开的影响分数
-        bool isActive;         // 公开的活动状态
-        bool isVerified;       // 公开的验证状态
+        uint256 targetAmount;  // Public target amount
+        uint256 currentAmount; // Public current amount
+        uint256 donorCount;    // Public donor count
+        uint256 impactScore;   // Public impact score
+        bool isActive;         // Public active status
+        bool isVerified;       // Public verification status
         string name;
         string description;
         string category;
@@ -84,7 +84,7 @@ contract PrivateImpactChain is SepoliaConfig {
         string memory _name,
         string memory _description,
         string memory _category,
-        uint256 _targetAmount,  // 使用普通uint256，不加密
+        uint256 _targetAmount,  // Use regular uint256, no encryption
         uint256 _duration
     ) public returns (uint256) {
         require(bytes(_name).length > 0, "Campaign name cannot be empty");
@@ -95,12 +95,12 @@ contract PrivateImpactChain is SepoliaConfig {
         
         campaigns[campaignId] = ImpactCampaign({
             campaignId: campaignId,
-            targetAmount: _targetAmount,  // 公开存储目标金额
-            currentAmount: 0,            // 公开存储当前金额
-            donorCount: 0,              // 公开存储捐赠者数量
-            impactScore: 0,             // 公开存储影响分数
-            isActive: true,            // 公开存储活动状态
-            isVerified: false,          // 公开存储验证状态
+            targetAmount: _targetAmount,  // Public storage of target amount
+            currentAmount: 0,            // Public storage of current amount
+            donorCount: 0,              // Public storage of donor count
+            impactScore: 0,             // Public storage of impact score
+            isActive: true,            // Public storage of active status
+            isVerified: false,          // Public storage of verification status
             name: _name,
             description: _description,
             category: _category,
