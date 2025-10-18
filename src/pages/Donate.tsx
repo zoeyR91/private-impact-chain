@@ -139,7 +139,7 @@ export default function Donate() {
         throw new Error(`Amount ${amountInCents} exceeds 32-bit limit`);
       }
       
-      encryptedInput.add32(BigInt(amountInCents));
+      encryptedInput.add32(amountInCents);
       addLog(`✅ Amount added to FHE input: ${amountInCents} cents`);
       
       // Add anonymous flag - this gets encrypted (使用add8，因为合约期望ebool)
@@ -216,25 +216,25 @@ export default function Donate() {
       } else if (encryptedResult.inputProof instanceof Uint8Array) {
         inputProofHex = `0x${Array.from(encryptedResult.inputProof).map(b => b.toString(16).padStart(2, '0')).join('')}`;
       } else {
-        inputProofHex = `0x${encryptedResult.inputProof.toString()}`;
+        inputProofHex = `0x${String(encryptedResult.inputProof)}`;
       }
       
       addLog(`📊 Input Proof Type: ${typeof encryptedResult.inputProof}`);
       addLog(`📊 Input Proof Length: ${inputProofHex.length} chars`);
       
-      const tx = await writeContractAsync({
-        address: contractAddress as `0x${string}`,
-        abi: CONTRACT_ABI,
-        functionName: 'makeDonation',
-        args: [
-          parseInt(selectedCampaignId),           // campaignId (uint256)
-          handles[0] as `0x${string}`,            // amount (bytes32) - first handle
-          handles[1] as `0x${string}`,            // isAnonymous (bytes32) - second handle  
-          inputProofHex as `0x${string}`         // inputProof (bytes) - 确保是字符串格式
-        ],
-        value: BigInt(0), // No ETH value needed for FHE donations
-        gas: BigInt(30000000) // Increase gas limit for FHE operations
-      });
+            const tx = await writeContractAsync({
+                address: contractAddress as `0x${string}`,
+                abi: CONTRACT_ABI,
+                functionName: 'makeDonation',
+                args: [
+                    BigInt(parseInt(selectedCampaignId)),           // campaignId (uint256)
+                    handles[0] as `0x${string}`,            // amount (bytes32) - first handle
+                    handles[1] as `0x${string}`,            // isAnonymous (bytes32) - second handle  
+                    inputProofHex as `0x${string}`         // inputProof (bytes) - 确保是字符串格式
+                ],
+                value: BigInt(0) // No ETH value needed for FHE donations
+                // 移除 gas 参数，让网络自动估算
+            } as any);
       
       addLog(`✅ Transaction submitted: ${tx}`);
       addLog('⏳ Waiting for transaction confirmation...');
@@ -277,7 +277,7 @@ export default function Donate() {
         addLog(`📊 Error Details:`);
         addLog(`  - Message: ${error.message}`);
         addLog(`  - Name: ${error.name}`);
-        if (error.cause) {
+        if ('cause' in error && error.cause) {
           addLog(`  - Cause: ${error.cause}`);
         }
       }
