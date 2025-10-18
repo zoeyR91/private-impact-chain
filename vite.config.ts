@@ -15,8 +15,8 @@ export default defineConfig(() => ({
       name: 'valtio-vanilla-polyfill',
       resolveId(id) {
         if (id === 'valtio/vanilla') {
-          // Use import.meta.resolve for ES modules
-          return 'valtio';
+          // Return the actual valtio/vanilla module path
+          return 'valtio/vanilla';
         }
         return null;
       }
@@ -25,7 +25,6 @@ export default defineConfig(() => ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
-      "valtio/vanilla": "valtio",
     },
   },
   define: { 
@@ -33,7 +32,9 @@ export default defineConfig(() => ({
   },
   optimizeDeps: { 
     include: [
-      '@zama-fhe/relayer-sdk/bundle'  // Pre-build FHE SDK
+      '@zama-fhe/relayer-sdk/bundle',  // Pre-build FHE SDK
+      'valtio',
+      'valtio/vanilla'
     ]
   }
 }));
