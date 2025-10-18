@@ -1,6 +1,6 @@
 // RPC configuration with fallback nodes
 export const RPC_CONFIG = {
-  primary: 'https://sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+  primary: 'https://1rpc.io/sepolia',
   fallbacks: [
     'https://rpc.sepolia.org',
     'https://sepolia.gateway.tenderly.co',

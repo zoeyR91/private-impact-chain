@@ -1,24 +1,9 @@
 {
-  "contractAddress": "0x0000000000000000000000000000000000000000",
-  "deployer": "0x46a0E9DC4ee067f81777124ec881Bb47e4884141",
+  "address": "0x82d8c4635FA565234fFB33c5242242C0Fd615AeD",
   "network": "sepolia",
-  "timestamp": "2025-10-18T07:22:47.191Z",
-  "note": "Contract deployment requires FHEVM network setup for actual deployment",
-  "privateKey": "602f15b250...",
-  "rpcUrl": "https://1rpc.io/sepolia",
-  "balance": "0.24094997106953608",
-  "deploymentStatus": "Ready for FHEVM deployment",
-  "fheFeatures": [
-    "Encrypted campaign creation",
-    "Encrypted donation processing",
-    "Encrypted impact reporting",
-    "Encrypted reputation system",
-    "ACL permissions management"
-  ],
-  "nextSteps": [
-    "Configure FHEVM network",
-    "Deploy to FHEVM testnet",
-    "Update contract address in frontend",
-    "Test FHE encryption/decryption flow"
-  ]
+  "deployedAt": "2025-10-18T08:31:42.930Z",
+  "explorer": "https://sepolia.etherscan.io/address/0x82d8c4635FA565234fFB33c5242242C0Fd615AeD",
+  "deployer": "0x4F922AfdBc66ca3253064c7e6D2911237586dA79",
+  "verifier": "0x4F922AfdBc66ca3253064c7e6D2911237586dA79",
+  "impactValidator": "0x4F922AfdBc66ca3253064c7e6D2911237586dA79"
 }

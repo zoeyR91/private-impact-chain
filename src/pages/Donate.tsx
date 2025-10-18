@@ -67,7 +67,7 @@ export default function Donate() {
     };
 
     loadCampaigns();
-  }, [isConnected, getAllCampaigns]);
+  }, [isConnected]); // 移除 getAllCampaigns 依赖
 
   // Update selected campaign when campaign ID changes
   useEffect(() => {

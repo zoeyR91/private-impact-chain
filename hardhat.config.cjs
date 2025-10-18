@@ -1,6 +1,7 @@
 const { HardhatUserConfig } = require("hardhat/config");
 require("@nomicfoundation/hardhat-toolbox");
 require("@nomicfoundation/hardhat-verify");
+require("@fhevm/hardhat-plugin");
 require("dotenv/config");
 
 const config = {
@@ -9,14 +10,13 @@ const config = {
     settings: {
       optimizer: {
         enabled: true,
-        runs: 200,
-        viaIR: true  // Required for FHE contracts
+        runs: 200
       }
     }
   },
   networks: {
     sepolia: {
-      url: process.env.VITE_SEPOLIA_RPC_URL || "https://1rpc.io/sepolia",
+      url: process.env.NEXT_PUBLIC_RPC_URL || "https://rpc.sepolia.org",
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
       chainId: 11155111
     },
