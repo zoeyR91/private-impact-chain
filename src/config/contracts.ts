@@ -1,6 +1,11 @@
 // Contract configuration and ABI
 export const CONTRACT_ADDRESS = import.meta.env.VITE_SEPOLIA_CONTRACT_ADDRESS || '0x9591eF35692363EEd4eeEac08F5d2CF047689CE3';
 
+// Log contract address immediately when module loads
+console.log('🏗️ Contract Address:', CONTRACT_ADDRESS);
+console.log('🌐 Environment:', import.meta.env.MODE);
+console.log('🔗 VITE_SEPOLIA_CONTRACT_ADDRESS:', import.meta.env.VITE_SEPOLIA_CONTRACT_ADDRESS);
+
 // Contract ABI for PrivateImpactChain
 export const CONTRACT_ABI = [
   {

@@ -49,6 +49,8 @@ export default function Donate() {
       
       setIsLoadingCampaigns(true);
       addLog('📊 Loading campaigns from contract...');
+      addLog(`🏗️ Contract Address: ${CONTRACT_ADDRESS}`);
+      addLog(`🌐 Environment: ${import.meta.env.MODE}`);
       
       try {
         const campaignData = await getAllCampaigns();

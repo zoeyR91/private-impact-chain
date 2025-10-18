@@ -136,6 +136,11 @@ export function useContract() {
   // Get all campaigns (public data only)
   const getAllCampaigns = async () => {
     try {
+      // Log contract address immediately
+      console.log('📊 Loading campaigns from contract...');
+      console.log('🏗️ Contract Address:', CONTRACT_ADDRESS);
+      console.log('🌐 Network:', publicClient?.chain?.name || 'Unknown');
+      
       if (!publicClient) {
         console.warn('Public client not available, returning mock data');
         // Return mock data when public client is not available
