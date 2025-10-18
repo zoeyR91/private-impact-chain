@@ -1,5 +1,5 @@
 // Contract configuration and ABI
-export const CONTRACT_ADDRESS = import.meta.env.VITE_SEPOLIA_CONTRACT_ADDRESS || '0x4a2ef3a9611b284E7BfB5e8F8bf50246b6dd4E8f';
+export const CONTRACT_ADDRESS = import.meta.env.VITE_SEPOLIA_CONTRACT_ADDRESS || '0x0dae1FD7328Da9Ce999c757dD931c4147e9caF66';
 
 // Log contract address immediately when module loads
 console.log('🏗️ Contract Address:', CONTRACT_ADDRESS);

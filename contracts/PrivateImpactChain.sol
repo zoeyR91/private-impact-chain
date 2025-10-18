@@ -131,6 +131,8 @@ contract PrivateImpactChain is SepoliaConfig {
         euint32 internalAmount = FHE.fromExternal(amount, inputProof);
         ebool internalIsAnonymous = FHE.fromExternal(isAnonymous, inputProof);
         
+        // Ultra-simplified: Only store the essential encrypted data
+        // Remove all complex FHE operations to minimize gas usage
         donations[donationId] = Donation({
             donationId: FHE.asEuint32(uint32(donationId)),
             amount: internalAmount,
@@ -140,26 +142,8 @@ contract PrivateImpactChain is SepoliaConfig {
             isAnonymous: internalIsAnonymous
         });
         
-        // Simplified: Remove ACL for demo purposes to reduce gas usage
-        
-        // Simplified: Only store encrypted donation data
-        // Campaign totals remain unchanged for demo purposes
-        // This focuses on FHE encryption of donation amount and anonymity
-        
-        // Simplified: Just initialize donor profile if first time
-        // No complex FHE calculations for demo purposes
-        if (!profileInitialized[msg.sender]) {
-            donorProfiles[msg.sender] = DonorProfile({
-                totalDonated: internalAmount,
-                donationCount: FHE.asEuint32(1),
-                reputationScore: FHE.asEuint32(10),
-                isVerified: FHE.asEbool(false),
-                encryptedProfile: ""
-            });
-            profileInitialized[msg.sender] = true;
-        }
-        
-        // Simplified: Remove ACL for donor profile to reduce gas usage
+        // Remove all other FHE operations to minimize gas usage
+        // Focus only on core FHE encryption of donation data
         
         emit DonationMade(donationId, campaignId, msg.sender);
         return donationId;
