@@ -11,7 +11,7 @@ import { Badge } from '../components/ui/badge';
 import { Alert, AlertDescription } from '../components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Progress } from '../components/ui/progress';
-import { Loader2, Shield, Eye, EyeOff, Lock, Unlock, Heart, ArrowLeft, CheckCircle, Users, Target, TrendingUp, DollarSign } from 'lucide-react';
+import { Loader2, Shield, Eye, EyeOff, Lock, Unlock, Heart, ArrowLeft, CheckCircle, Users, Target, TrendingUp, DollarSign, AlertCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function Donate() {
