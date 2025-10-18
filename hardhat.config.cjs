@@ -1,7 +1,6 @@
 const { HardhatUserConfig } = require("hardhat/config");
 require("@nomicfoundation/hardhat-toolbox");
 require("@nomicfoundation/hardhat-verify");
-require("@fhevm/hardhat-plugin");
 require("dotenv/config");
 
 const config = {
@@ -30,9 +29,6 @@ const config = {
   },
   sourcify: {
     enabled: true,
-  },
-  fhevm: {
-    network: "sepolia"
   }
 };
 
