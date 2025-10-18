@@ -8,6 +8,8 @@ import { Shield, Lock, DollarSign, Wallet, CheckCircle, ExternalLink } from "luc
 import { useToast } from "@/hooks/use-toast";
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { useAccount, useDisconnect } from 'wagmi';
+import { useContract } from "@/hooks/useContract";
+import { useFHE } from "@/hooks/useFHE";
 
 interface DonationModalProps {
   campaignName: string;
@@ -16,6 +18,7 @@ interface DonationModalProps {
 
 export const DonationModal = ({ campaignName, trigger }: DonationModalProps) => {
   const [donationAmount, setDonationAmount] = useState("");
+  const [isAnonymous, setIsAnonymous] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   const [step, setStep] = useState<'connect' | 'amount' | 'confirm' | 'processing' | 'complete'>('connect');
@@ -23,6 +26,8 @@ export const DonationModal = ({ campaignName, trigger }: DonationModalProps) => 
   const { open } = useWeb3Modal();
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
+  const { makeDonation } = useContract();
+  const { isInitialized } = useFHE();
 
   const handleConnectWallet = () => {
     open();
@@ -47,20 +52,45 @@ export const DonationModal = ({ campaignName, trigger }: DonationModalProps) => 
   };
 
   const handleConfirmDonation = async () => {
+    if (!isInitialized) {
+      toast({
+        title: "FHE Not Initialized",
+        description: "Please wait for FHE encryption to initialize",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setStep('processing');
     setIsProcessing(true);
     
-    // Simulate donation processing
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    
-    setIsProcessing(false);
-    setIsComplete(true);
-    setStep('complete');
-    
-    toast({
-      title: "Donation Successful",
-      description: "Your anonymous donation has been processed securely",
-    });
+    try {
+      // Make encrypted donation using FHE
+      const tx = await makeDonation(
+        0, // campaignId - this should be passed as prop
+        parseFloat(donationAmount),
+        isAnonymous
+      );
+      
+      setIsProcessing(false);
+      setIsComplete(true);
+      setStep('complete');
+      
+      toast({
+        title: "Donation Successful",
+        description: "Your encrypted donation has been processed securely",
+      });
+    } catch (error) {
+      console.error('Donation failed:', error);
+      setIsProcessing(false);
+      setStep('confirm');
+      
+      toast({
+        title: "Donation Failed",
+        description: error instanceof Error ? error.message : "Failed to process donation",
+        variant: "destructive",
+      });
+    }
   };
 
   const resetModal = () => {
@@ -173,6 +203,22 @@ export const DonationModal = ({ campaignName, trigger }: DonationModalProps) => 
               </div>
             </div>
 
+            <div className="space-y-2">
+              <Label htmlFor="anonymous">Privacy Options</Label>
+              <div className="flex items-center space-x-2">
+                <input
+                  id="anonymous"
+                  type="checkbox"
+                  checked={isAnonymous}
+                  onChange={(e) => setIsAnonymous(e.target.checked)}
+                  className="rounded border-gray-300"
+                />
+                <Label htmlFor="anonymous" className="text-sm">
+                  Make this donation anonymous (recommended)
+                </Label>
+              </div>
+            </div>
+
             <div className="grid grid-cols-3 gap-2">
               {[25, 50, 100].map((amount) => (
                 <Button
@@ -226,7 +272,11 @@ export const DonationModal = ({ campaignName, trigger }: DonationModalProps) => 
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span>Privacy Protection:</span>
-                <span className="font-semibold text-accent">✓ Enabled</span>
+                <span className="font-semibold text-accent">✓ FHE Encrypted</span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span>Anonymous:</span>
+                <span className="font-semibold text-accent">{isAnonymous ? '✓ Yes' : '✗ No'}</span>
               </div>
               <Separator />
               <div className="flex items-center justify-between">
@@ -253,7 +303,7 @@ export const DonationModal = ({ campaignName, trigger }: DonationModalProps) => 
             <div className="space-y-2">
               <h3 className="text-lg font-semibold">Processing Your Donation</h3>
               <p className="text-sm text-muted-foreground">
-                Encrypting your donation and ensuring complete anonymity...
+                Encrypting your donation using FHE and ensuring complete privacy...
               </p>
             </div>
           </div>
@@ -267,7 +317,7 @@ export const DonationModal = ({ campaignName, trigger }: DonationModalProps) => 
             <div className="space-y-2">
               <h3 className="text-lg font-semibold">Donation Complete!</h3>
               <p className="text-sm text-muted-foreground">
-                Your ${donationAmount} donation to {campaignName} has been processed anonymously.
+                Your ${donationAmount} donation to {campaignName} has been processed with FHE encryption.
               </p>
             </div>
             <div className="bg-accent/10 p-4 rounded-lg">

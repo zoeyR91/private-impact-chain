@@ -2,7 +2,7 @@
 pragma solidity ^0.8.24;
 
 import { SepoliaConfig } from "@fhevm/solidity/config/ZamaConfig.sol";
-import { euint32, externalEuint32, euint8, ebool, FHE } from "@fhevm/solidity/lib/FHE.sol";
+import { euint32, externalEuint32, euint8, ebool, eaddress, externalEbool, FHE } from "@fhevm/solidity/lib/FHE.sol";
 
 contract PrivateImpactChain is SepoliaConfig {
     using FHE for *;
@@ -84,18 +84,21 @@ contract PrivateImpactChain is SepoliaConfig {
         string memory _name,
         string memory _description,
         string memory _category,
-        uint256 _targetAmount,
-        uint256 _duration
+        externalEuint32 _targetAmount,
+        uint256 _duration,
+        bytes calldata inputProof
     ) public returns (uint256) {
         require(bytes(_name).length > 0, "Campaign name cannot be empty");
         require(_duration > 0, "Duration must be positive");
-        require(_targetAmount > 0, "Target amount must be positive");
         
         uint256 campaignId = campaignCounter++;
         
+        // Convert external encrypted target amount to internal euint32
+        euint32 encryptedTargetAmount = FHE.fromExternal(_targetAmount, inputProof);
+        
         campaigns[campaignId] = ImpactCampaign({
-            campaignId: FHE.asEuint32(0), // Will be set properly later
-            targetAmount: FHE.asEuint32(0), // Will be set to actual value via FHE operations
+            campaignId: FHE.asEuint32(campaignId),
+            targetAmount: encryptedTargetAmount,
             currentAmount: FHE.asEuint32(0),
             donorCount: FHE.asEuint32(0),
             impactScore: FHE.asEuint32(0),
@@ -109,6 +112,10 @@ contract PrivateImpactChain is SepoliaConfig {
             endTime: block.timestamp + _duration
         });
         
+        // Set ACL permissions for the encrypted target amount
+        FHE.allowThis(encryptedTargetAmount);
+        FHE.allow(encryptedTargetAmount, msg.sender);
+        
         emit CampaignCreated(campaignId, msg.sender, _name);
         return campaignId;
     }
@@ -116,7 +123,7 @@ contract PrivateImpactChain is SepoliaConfig {
     function makeDonation(
         uint256 campaignId,
         externalEuint32 amount,
-        ebool isAnonymous,
+        externalEbool isAnonymous,
         bytes calldata inputProof
     ) public payable returns (uint256) {
         require(campaigns[campaignId].organizer != address(0), "Campaign does not exist");
@@ -124,24 +131,31 @@ contract PrivateImpactChain is SepoliaConfig {
         
         uint256 donationId = donationCounter++;
         
-        // Convert externalEuint32 to euint32 using FHE.fromExternal
+        // Convert external encrypted values to internal FHE types
         euint32 internalAmount = FHE.fromExternal(amount, inputProof);
+        ebool internalIsAnonymous = FHE.fromExternal(isAnonymous, inputProof);
         
         donations[donationId] = Donation({
-            donationId: FHE.asEuint32(0), // Will be set properly later
+            donationId: FHE.asEuint32(donationId),
             amount: internalAmount,
-            campaignId: FHE.asEuint32(0), // Will be set to actual value
+            campaignId: FHE.asEuint32(campaignId),
             donor: msg.sender,
             timestamp: block.timestamp,
-            isAnonymous: isAnonymous
+            isAnonymous: internalIsAnonymous
         });
+        
+        // Set ACL permissions for donation data
+        FHE.allowThis(internalAmount);
+        FHE.allow(internalAmount, msg.sender);
+        FHE.allowThis(internalIsAnonymous);
+        FHE.allow(internalIsAnonymous, msg.sender);
         
         // Update campaign totals
         campaigns[campaignId].currentAmount = FHE.add(campaigns[campaignId].currentAmount, internalAmount);
         campaigns[campaignId].donorCount = FHE.add(campaigns[campaignId].donorCount, FHE.asEuint32(1));
         
         // Update donor profile
-        if (donorProfiles[msg.sender].donor == address(0)) {
+        if (donorProfiles[msg.sender].totalDonated == FHE.asEuint32(0)) {
             donorProfiles[msg.sender] = DonorProfile({
                 totalDonated: internalAmount,
                 donationCount: FHE.asEuint32(1),
@@ -154,29 +168,43 @@ contract PrivateImpactChain is SepoliaConfig {
             donorProfiles[msg.sender].donationCount = FHE.add(donorProfiles[msg.sender].donationCount, FHE.asEuint32(1));
         }
         
+        // Set ACL permissions for donor profile
+        FHE.allowThis(donorProfiles[msg.sender].totalDonated);
+        FHE.allow(donorProfiles[msg.sender].totalDonated, msg.sender);
+        FHE.allowThis(donorProfiles[msg.sender].donationCount);
+        FHE.allow(donorProfiles[msg.sender].donationCount, msg.sender);
+        FHE.allowThis(donorProfiles[msg.sender].reputationScore);
+        FHE.allow(donorProfiles[msg.sender].reputationScore, msg.sender);
+        
         emit DonationMade(donationId, campaignId, msg.sender);
         return donationId;
     }
     
     function submitImpactReport(
         uint256 campaignId,
-        euint32 beneficiariesReached,
-        euint32 fundsUtilized,
-        euint32 impactMetrics,
+        externalEuint32 beneficiariesReached,
+        externalEuint32 fundsUtilized,
+        externalEuint32 impactMetrics,
         string memory reportHash,
-        string memory evidenceHash
+        string memory evidenceHash,
+        bytes calldata inputProof
     ) public returns (uint256) {
         require(campaigns[campaignId].organizer == msg.sender, "Only organizer can submit report");
         require(block.timestamp > campaigns[campaignId].endTime, "Campaign must be ended");
         
         uint256 reportId = reportCounter++;
         
+        // Convert external encrypted values to internal FHE types
+        euint32 internalBeneficiariesReached = FHE.fromExternal(beneficiariesReached, inputProof);
+        euint32 internalFundsUtilized = FHE.fromExternal(fundsUtilized, inputProof);
+        euint32 internalImpactMetrics = FHE.fromExternal(impactMetrics, inputProof);
+        
         impactReports[reportId] = ImpactReport({
-            reportId: FHE.asEuint32(0), // Will be set properly later
-            campaignId: FHE.asEuint32(0), // Will be set to actual value
-            beneficiariesReached: beneficiariesReached,
-            fundsUtilized: fundsUtilized,
-            impactMetrics: impactMetrics,
+            reportId: FHE.asEuint32(reportId),
+            campaignId: FHE.asEuint32(campaignId),
+            beneficiariesReached: internalBeneficiariesReached,
+            fundsUtilized: internalFundsUtilized,
+            impactMetrics: internalImpactMetrics,
             isVerified: FHE.asEbool(false),
             reportHash: reportHash,
             evidenceHash: evidenceHash,
@@ -184,35 +212,68 @@ contract PrivateImpactChain is SepoliaConfig {
             timestamp: block.timestamp
         });
         
+        // Set ACL permissions for impact report data
+        FHE.allowThis(internalBeneficiariesReached);
+        FHE.allow(internalBeneficiariesReached, msg.sender);
+        FHE.allowThis(internalFundsUtilized);
+        FHE.allow(internalFundsUtilized, msg.sender);
+        FHE.allowThis(internalImpactMetrics);
+        FHE.allow(internalImpactMetrics, msg.sender);
+        
         emit ImpactReported(reportId, campaignId, msg.sender);
         return reportId;
     }
     
-    function verifyCampaign(uint256 campaignId, ebool isVerified) public {
+    function verifyCampaign(uint256 campaignId, externalEbool isVerified, bytes calldata inputProof) public {
         require(msg.sender == verifier, "Only verifier can verify campaigns");
         require(campaigns[campaignId].organizer != address(0), "Campaign does not exist");
         
-        campaigns[campaignId].isVerified = isVerified;
+        // Convert external encrypted boolean to internal ebool
+        ebool internalIsVerified = FHE.fromExternal(isVerified, inputProof);
+        
+        campaigns[campaignId].isVerified = internalIsVerified;
+        
+        // Set ACL permissions
+        FHE.allowThis(internalIsVerified);
+        FHE.allow(internalIsVerified, msg.sender);
+        
         emit CampaignVerified(campaignId, false); // FHE.decrypt(isVerified) - will be decrypted off-chain
     }
     
-    function validateImpactReport(uint256 reportId, ebool isValid) public {
+    function validateImpactReport(uint256 reportId, externalEbool isValid, bytes calldata inputProof) public {
         require(msg.sender == impactValidator, "Only impact validator can validate reports");
         require(impactReports[reportId].reporter != address(0), "Report does not exist");
         
-        impactReports[reportId].isVerified = isValid;
+        // Convert external encrypted boolean to internal ebool
+        ebool internalIsValid = FHE.fromExternal(isValid, inputProof);
+        
+        impactReports[reportId].isVerified = internalIsValid;
+        
+        // Set ACL permissions
+        FHE.allowThis(internalIsValid);
+        FHE.allow(internalIsValid, msg.sender);
+        
         emit ImpactValidated(reportId, false); // FHE.decrypt(isValid) - will be decrypted off-chain
     }
     
-    function updateReputation(address user, euint32 reputation) public {
+    function updateReputation(address user, externalEuint32 reputation, bytes calldata inputProof) public {
         require(msg.sender == verifier || msg.sender == impactValidator, "Only authorized can update reputation");
         require(user != address(0), "Invalid user address");
         
+        // Convert external encrypted reputation to internal euint32
+        euint32 internalReputation = FHE.fromExternal(reputation, inputProof);
+        
         // Determine if user is donor or organizer based on context
-        if (donorProfiles[user].donor != address(0)) {
-            donorProfiles[user].reputationScore = reputation;
+        if (donorProfiles[user].totalDonated != FHE.asEuint32(0)) {
+            donorProfiles[user].reputationScore = internalReputation;
+            // Set ACL permissions for donor reputation
+            FHE.allowThis(internalReputation);
+            FHE.allow(internalReputation, user);
         } else {
-            organizerReputation[user] = reputation;
+            organizerReputation[user] = internalReputation;
+            // Set ACL permissions for organizer reputation
+            FHE.allowThis(internalReputation);
+            FHE.allow(internalReputation, user);
         }
         
         emit ReputationUpdated(user, 0); // FHE.decrypt(reputation) - will be decrypted off-chain
@@ -230,12 +291,6 @@ contract PrivateImpactChain is SepoliaConfig {
         string memory name,
         string memory description,
         string memory category,
-        uint8 targetAmount,
-        uint8 currentAmount,
-        uint8 donorCount,
-        uint8 impactScore,
-        bool isActive,
-        bool isVerified,
         address organizer,
         uint256 startTime,
         uint256 endTime
@@ -245,41 +300,58 @@ contract PrivateImpactChain is SepoliaConfig {
             campaign.name,
             campaign.description,
             campaign.category,
-            0, // FHE.decrypt(campaign.targetAmount) - will be decrypted off-chain
-            0, // FHE.decrypt(campaign.currentAmount) - will be decrypted off-chain
-            0, // FHE.decrypt(campaign.donorCount) - will be decrypted off-chain
-            0, // FHE.decrypt(campaign.impactScore) - will be decrypted off-chain
-            false, // FHE.decrypt(campaign.isActive) - will be decrypted off-chain
-            false, // FHE.decrypt(campaign.isVerified) - will be decrypted off-chain
             campaign.organizer,
             campaign.startTime,
             campaign.endTime
         );
     }
     
+    // Get encrypted campaign data for FHE decryption
+    function getCampaignEncryptedData(uint256 campaignId) public view returns (
+        bytes32 targetAmount,
+        bytes32 currentAmount,
+        bytes32 donorCount,
+        bytes32 impactScore,
+        bytes32 isActive,
+        bytes32 isVerified
+    ) {
+        ImpactCampaign storage campaign = campaigns[campaignId];
+        return (
+            campaign.targetAmount,
+            campaign.currentAmount,
+            campaign.donorCount,
+            campaign.impactScore,
+            campaign.isActive,
+            campaign.isVerified
+        );
+    }
+    
     function getDonationInfo(uint256 donationId) public view returns (
-        uint8 amount,
-        uint8 campaignId,
         address donor,
-        uint256 timestamp,
-        bool isAnonymous
+        uint256 timestamp
     ) {
         Donation storage donation = donations[donationId];
         return (
-            0, // FHE.decrypt(donation.amount) - will be decrypted off-chain
-            0, // FHE.decrypt(donation.campaignId) - will be decrypted off-chain
             donation.donor,
-            donation.timestamp,
-            false // FHE.decrypt(donation.isAnonymous) - will be decrypted off-chain
+            donation.timestamp
+        );
+    }
+    
+    // Get encrypted donation data for FHE decryption
+    function getDonationEncryptedData(uint256 donationId) public view returns (
+        bytes32 amount,
+        bytes32 campaignId,
+        bytes32 isAnonymous
+    ) {
+        Donation storage donation = donations[donationId];
+        return (
+            donation.amount,
+            donation.campaignId,
+            donation.isAnonymous
         );
     }
     
     function getImpactReportInfo(uint256 reportId) public view returns (
-        uint8 campaignId,
-        uint8 beneficiariesReached,
-        uint8 fundsUtilized,
-        uint8 impactMetrics,
-        bool isVerified,
         string memory reportHash,
         string memory evidenceHash,
         address reporter,
@@ -287,11 +359,6 @@ contract PrivateImpactChain is SepoliaConfig {
     ) {
         ImpactReport storage report = impactReports[reportId];
         return (
-            0, // FHE.decrypt(report.campaignId) - will be decrypted off-chain
-            0, // FHE.decrypt(report.beneficiariesReached) - will be decrypted off-chain
-            0, // FHE.decrypt(report.fundsUtilized) - will be decrypted off-chain
-            0, // FHE.decrypt(report.impactMetrics) - will be decrypted off-chain
-            false, // FHE.decrypt(report.isVerified) - will be decrypted off-chain
             report.reportHash,
             report.evidenceHash,
             report.reporter,
@@ -299,25 +366,51 @@ contract PrivateImpactChain is SepoliaConfig {
         );
     }
     
+    // Get encrypted impact report data for FHE decryption
+    function getImpactReportEncryptedData(uint256 reportId) public view returns (
+        bytes32 campaignId,
+        bytes32 beneficiariesReached,
+        bytes32 fundsUtilized,
+        bytes32 impactMetrics,
+        bytes32 isVerified
+    ) {
+        ImpactReport storage report = impactReports[reportId];
+        return (
+            report.campaignId,
+            report.beneficiariesReached,
+            report.fundsUtilized,
+            report.impactMetrics,
+            report.isVerified
+        );
+    }
+    
     function getDonorProfile(address donor) public view returns (
-        uint8 totalDonated,
-        uint8 donationCount,
-        uint8 reputationScore,
-        bool isVerified,
         string memory encryptedProfile
     ) {
         DonorProfile storage profile = donorProfiles[donor];
         return (
-            0, // FHE.decrypt(profile.totalDonated) - will be decrypted off-chain
-            0, // FHE.decrypt(profile.donationCount) - will be decrypted off-chain
-            0, // FHE.decrypt(profile.reputationScore) - will be decrypted off-chain
-            false, // FHE.decrypt(profile.isVerified) - will be decrypted off-chain
             profile.encryptedProfile
         );
     }
     
-    function getOrganizerReputation(address organizer) public view returns (uint8) {
-        return 0; // FHE.decrypt(organizerReputation[organizer]) - will be decrypted off-chain
+    // Get encrypted donor profile data for FHE decryption
+    function getDonorProfileEncryptedData(address donor) public view returns (
+        bytes32 totalDonated,
+        bytes32 donationCount,
+        bytes32 reputationScore,
+        bytes32 isVerified
+    ) {
+        DonorProfile storage profile = donorProfiles[donor];
+        return (
+            profile.totalDonated,
+            profile.donationCount,
+            profile.reputationScore,
+            profile.isVerified
+        );
+    }
+    
+    function getOrganizerReputation(address organizer) public view returns (bytes32) {
+        return organizerReputation[organizer];
     }
     
     function withdrawFunds(uint256 campaignId) public {

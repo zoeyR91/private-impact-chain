@@ -1,0 +1,7 @@
+{
+  "contractAddress": "0x0000000000000000000000000000000000000000",
+  "deployer": "0x0000000000000000000000000000000000000000",
+  "network": "sepolia",
+  "timestamp": "2024-10-18T15:15:00.000Z",
+  "note": "Mock deployment - requires FHEVM network setup for actual deployment"
+}
