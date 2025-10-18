@@ -79,7 +79,18 @@ async function main() {
       console.log(`📝 Creating sample campaign: ${campaign.name}`);
       console.log(`   - Target: $${campaign.targetAmount / 100} (public)`);
       console.log(`   - Duration: ${campaign.duration / (24 * 60 * 60)} days (public)`);
-      // Note: Campaign creation uses public data, only donations are FHE encrypted
+      
+      // Actually create the campaign on the contract
+      const tx = await privateImpactChain.createCampaign(
+        campaign.name,
+        campaign.description,
+        campaign.category,
+        campaign.targetAmount,
+        campaign.duration
+      );
+      
+      await tx.wait();
+      console.log(`✅ Created campaign: ${campaign.name}`);
     } catch (error) {
       console.log(`⚠️  Failed to create campaign ${campaign.name}:`, error.message);
     }

@@ -1,5 +1,5 @@
 // Contract configuration and ABI
-export const CONTRACT_ADDRESS = process.env.VITE_SEPOLIA_CONTRACT_ADDRESS || '0x82d8c4635FA565234fFB33c5242242C0Fd615AeD';
+export const CONTRACT_ADDRESS = process.env.VITE_SEPOLIA_CONTRACT_ADDRESS || '0x45C88c32757F3E4A82e3FD9A3d12B5902dB5dd1a';
 
 // Contract ABI for PrivateImpactChain
 export const CONTRACT_ABI = [
