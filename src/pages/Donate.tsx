@@ -232,7 +232,8 @@ export default function Donate() {
           handles[1] as `0x${string}`,            // isAnonymous (bytes32) - second handle  
           inputProofHex as `0x${string}`         // inputProof (bytes) - 确保是字符串格式
         ],
-        value: BigInt(0) // No ETH value needed for FHE donations
+        value: BigInt(0), // No ETH value needed for FHE donations
+        gas: BigInt(30000000) // Increase gas limit for FHE operations
       });
       
       addLog(`✅ Transaction submitted: ${tx}`);
