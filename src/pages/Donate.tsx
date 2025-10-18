@@ -9,18 +9,20 @@ import { Label } from '../components/ui/label';
 import { Checkbox } from '../components/ui/checkbox';
 import { Badge } from '../components/ui/badge';
 import { Alert, AlertDescription } from '../components/ui/alert';
-import { Loader2, Shield, Eye, EyeOff, Lock, Unlock, Heart, ArrowLeft, CheckCircle } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import { Progress } from '../components/ui/progress';
+import { Loader2, Shield, Eye, EyeOff, Lock, Unlock, Heart, ArrowLeft, CheckCircle, Users, Target, TrendingUp, DollarSign } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function Donate() {
   const { address, isConnected } = useAccount();
   const { instance, isInitialized, error: fheError } = useFHE();
-  const { makeDonation } = useContract();
+  const { makeDonation, getAllCampaigns } = useContract();
   
   // Form state
   const [amount, setAmount] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(false);
-  const [campaignId, setCampaignId] = useState('0');
+  const [selectedCampaignId, setSelectedCampaignId] = useState<string>('');
   
   // Process state
   const [isProcessing, setIsProcessing] = useState(false);
@@ -29,21 +31,51 @@ export default function Donate() {
   const [encryptedData, setEncryptedData] = useState<any>(null);
   const [decryptedData, setDecryptedData] = useState<any>(null);
   
-  // Demo campaign data
-  const demoCampaign = {
-    id: 0,
-    name: "Clean Water Initiative",
-    description: "Providing access to clean drinking water in underserved communities worldwide",
-    category: "Environment",
-    targetAmount: 5000000, // $50,000 in cents
-    currentAmount: 2850000, // $28,500 in cents
-    donorCount: 12847,
-    image: "https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=400&h=300&fit=crop"
-  };
+  // Campaign data from contract
+  const [campaigns, setCampaigns] = useState<any[]>([]);
+  const [isLoadingCampaigns, setIsLoadingCampaigns] = useState(false);
+  const [selectedCampaign, setSelectedCampaign] = useState<any>(null);
 
   const addLog = (message: string) => {
     setLogs(prev => [...prev, `${new Date().toLocaleTimeString()}: ${message}`]);
   };
+
+  // Load campaigns from contract
+  useEffect(() => {
+    const loadCampaigns = async () => {
+      if (!isConnected) return;
+      
+      setIsLoadingCampaigns(true);
+      addLog('📊 Loading campaigns from contract...');
+      
+      try {
+        const campaignData = await getAllCampaigns();
+        setCampaigns(campaignData);
+        addLog(`✅ Loaded ${campaignData.length} campaigns from contract`);
+        
+        // Auto-select first campaign if available
+        if (campaignData.length > 0) {
+          setSelectedCampaignId(campaignData[0].id.toString());
+          setSelectedCampaign(campaignData[0]);
+        }
+      } catch (error) {
+        addLog(`❌ Failed to load campaigns: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        console.error('Error loading campaigns:', error);
+      } finally {
+        setIsLoadingCampaigns(false);
+      }
+    };
+
+    loadCampaigns();
+  }, [isConnected, getAllCampaigns]);
+
+  // Update selected campaign when campaign ID changes
+  useEffect(() => {
+    if (selectedCampaignId && campaigns.length > 0) {
+      const campaign = campaigns.find(c => c.id.toString() === selectedCampaignId);
+      setSelectedCampaign(campaign || null);
+    }
+  }, [selectedCampaignId, campaigns]);
 
   const handleDonate = async () => {
     if (!isConnected || !address) {
@@ -217,43 +249,98 @@ export default function Donate() {
           </p>
         </div>
 
-        {/* Campaign Info */}
+        {/* Campaign Selection */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Heart className="h-6 w-6 text-red-600" />
-              {demoCampaign.name}
+              <Target className="h-6 w-6 text-blue-600" />
+              Select Campaign
             </CardTitle>
-            <CardDescription>{demoCampaign.description}</CardDescription>
+            <CardDescription>
+              Choose a campaign to donate to from the blockchain
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">${(demoCampaign.currentAmount / 100).toLocaleString()}</div>
-                <div className="text-sm text-gray-600">Raised</div>
+            {isLoadingCampaigns ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="h-6 w-6 animate-spin mr-2" />
+                Loading campaigns from contract...
               </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">${(demoCampaign.targetAmount / 100).toLocaleString()}</div>
-                <div className="text-sm text-gray-600">Goal</div>
+            ) : campaigns.length === 0 ? (
+              <Alert>
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>
+                  No campaigns found. Please check if the contract is deployed and initialized.
+                </AlertDescription>
+              </Alert>
+            ) : (
+              <div className="space-y-4">
+                <Label htmlFor="campaign-select">Choose Campaign</Label>
+                <Select value={selectedCampaignId} onValueChange={setSelectedCampaignId}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a campaign" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {campaigns.map((campaign) => (
+                      <SelectItem key={campaign.id} value={campaign.id.toString()}>
+                        {campaign.name} - {campaign.category}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-purple-600">{demoCampaign.donorCount.toLocaleString()}</div>
-                <div className="text-sm text-gray-600">Donors</div>
-              </div>
-            </div>
-            <div className="mt-4">
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div 
-                  className="bg-green-600 h-2 rounded-full" 
-                  style={{ width: `${(demoCampaign.currentAmount / demoCampaign.targetAmount) * 100}%` }}
-                ></div>
-              </div>
-              <div className="text-sm text-gray-600 mt-1">
-                {Math.round((demoCampaign.currentAmount / demoCampaign.targetAmount) * 100)}% funded
-              </div>
-            </div>
+            )}
           </CardContent>
         </Card>
+
+        {/* Selected Campaign Info */}
+        {selectedCampaign && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Heart className="h-6 w-6 text-red-600" />
+                {selectedCampaign.name}
+              </CardTitle>
+              <CardDescription>{selectedCampaign.description}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-green-600">${(selectedCampaign.currentAmount / 100).toLocaleString()}</div>
+                  <div className="text-sm text-gray-600">Raised</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-blue-600">${(selectedCampaign.targetAmount / 100).toLocaleString()}</div>
+                  <div className="text-sm text-gray-600">Goal</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-purple-600">{selectedCampaign.donorCount.toLocaleString()}</div>
+                  <div className="text-sm text-gray-600">Donors</div>
+                </div>
+              </div>
+              <div className="mt-4">
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div 
+                    className="bg-green-600 h-2 rounded-full" 
+                    style={{ width: `${(selectedCampaign.currentAmount / selectedCampaign.targetAmount) * 100}%` }}
+                  ></div>
+                </div>
+                <div className="text-sm text-gray-600 mt-1">
+                  {Math.round((selectedCampaign.currentAmount / selectedCampaign.targetAmount) * 100)}% funded
+                </div>
+              </div>
+              <div className="mt-4 flex items-center gap-2">
+                <Badge variant={selectedCampaign.isActive ? "default" : "secondary"}>
+                  {selectedCampaign.isActive ? "Active" : "Inactive"}
+                </Badge>
+                <Badge variant={selectedCampaign.isVerified ? "default" : "outline"}>
+                  {selectedCampaign.isVerified ? "Verified" : "Unverified"}
+                </Badge>
+                <Badge variant="outline">{selectedCampaign.category}</Badge>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Donation Form */}
         <Card>
@@ -264,29 +351,16 @@ export default function Donate() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="amount">Donation Amount (USD)</Label>
-                <Input
-                  id="amount"
-                  type="number"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  placeholder="Enter amount"
-                  disabled={isProcessing}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="campaign">Campaign ID</Label>
-                <Input
-                  id="campaign"
-                  type="number"
-                  value={campaignId}
-                  onChange={(e) => setCampaignId(e.target.value)}
-                  disabled={isProcessing}
-                />
-              </div>
+            <div className="space-y-2">
+              <Label htmlFor="amount">Donation Amount (USD)</Label>
+              <Input
+                id="amount"
+                type="number"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="Enter amount"
+                disabled={isProcessing}
+              />
             </div>
 
             <div className="flex items-center space-x-2">
@@ -299,9 +373,18 @@ export default function Donate() {
               <Label htmlFor="anonymous">Donate anonymously</Label>
             </div>
 
+            {!selectedCampaign && (
+              <Alert>
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>
+                  Please select a campaign above to make a donation.
+                </AlertDescription>
+              </Alert>
+            )}
+
             <Button 
               onClick={handleDonate} 
-              disabled={isProcessing || !isConnected || !isInitialized}
+              disabled={isProcessing || !isConnected || !isInitialized || !selectedCampaign}
               className="w-full"
             >
               {isProcessing ? (

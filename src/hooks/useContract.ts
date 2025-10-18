@@ -132,6 +132,66 @@ export function useContract() {
     return tx;
   };
 
+  // Get all campaigns (public data only)
+  const getAllCampaigns = async () => {
+    try {
+      // For now, return mock data since we need to implement proper contract reading
+      // In a real implementation, you would use useReadContract hooks here
+      const mockCampaigns = [
+        {
+          id: 0,
+          name: "Clean Water Initiative",
+          description: "Providing access to clean drinking water in underserved communities worldwide",
+          category: "Environment",
+          targetAmount: 5000000, // $50,000 in cents
+          currentAmount: 2850000, // $28,500 in cents
+          donorCount: 12847,
+          impactScore: 95,
+          isActive: true,
+          isVerified: true,
+          organizer: "0x1234567890123456789012345678901234567890",
+          startTime: Math.floor(Date.now() / 1000) - 86400 * 30, // 30 days ago
+          endTime: Math.floor(Date.now() / 1000) + 86400 * 30 // 30 days from now
+        },
+        {
+          id: 1,
+          name: "Education for All",
+          description: "Building schools and providing educational resources in developing countries",
+          category: "Education",
+          targetAmount: 7500000, // $75,000 in cents
+          currentAmount: 3200000, // $32,000 in cents
+          donorCount: 8542,
+          impactScore: 88,
+          isActive: true,
+          isVerified: true,
+          organizer: "0x2345678901234567890123456789012345678901",
+          startTime: Math.floor(Date.now() / 1000) - 86400 * 15, // 15 days ago
+          endTime: Math.floor(Date.now() / 1000) + 86400 * 45 // 45 days from now
+        },
+        {
+          id: 2,
+          name: "Medical Relief Fund",
+          description: "Providing emergency medical supplies and healthcare access",
+          category: "Healthcare",
+          targetAmount: 10000000, // $100,000 in cents
+          currentAmount: 1500000, // $15,000 in cents
+          donorCount: 3241,
+          impactScore: 92,
+          isActive: true,
+          isVerified: false,
+          organizer: "0x3456789012345678901234567890123456789012",
+          startTime: Math.floor(Date.now() / 1000) - 86400 * 7, // 7 days ago
+          endTime: Math.floor(Date.now() / 1000) + 86400 * 60 // 60 days from now
+        }
+      ];
+
+      return mockCampaigns;
+    } catch (error) {
+      console.error('Error fetching campaigns:', error);
+      return [];
+    }
+  };
+
   // Get Campaign Data (with decryption)
   const getCampaignData = async (campaignId: number) => {
     if (!instance || !address) {
@@ -180,6 +240,7 @@ export function useContract() {
     createCampaign,
     makeDonation,
     submitImpactReport,
+    getAllCampaigns,
     getCampaignData,
     isInitialized,
     contractAddress: CONTRACT_ADDRESS
