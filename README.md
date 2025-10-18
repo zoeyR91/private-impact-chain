@@ -2,32 +2,71 @@
 
 A fully homomorphic encryption (FHE) powered charity impact tracking platform that ensures complete privacy for donors while maintaining transparency and accountability in charitable giving.
 
-## Features
+## 🎥 Demo Video
 
-- **FHE-Encrypted Donations**: All donation amounts and donor information are encrypted using fully homomorphic encryption
-- **Anonymous Giving**: Donors can make completely anonymous donations while maintaining their reputation
-- **Impact Tracking**: Real-time tracking of charitable impact with encrypted metrics
-- **Reputation System**: Encrypted reputation scoring for both donors and organizations
-- **Transparent Reporting**: Verified impact reports with cryptographic proof
-- **Multi-Wallet Support**: Connect with various Web3 wallets including MetaMask, WalletConnect, and more
+[![Private Impact Chain Demo](https://img.shields.io/badge/📹_Watch_Demo-Video-blue)](./private-impact-compressed.mp4)
 
-## Technologies
+**Demo Video**: [private-impact-compressed.mp4](./private-impact-compressed.mp4) (3.8MB, High Quality)
 
-This project is built with:
+## 🏗️ Smart Contract
 
-- **Frontend**: Vite, TypeScript, React, shadcn-ui, Tailwind CSS
-- **Web3**: Wagmi, Viem, Web3Modal for wallet connectivity
-- **Blockchain**: Ethereum Sepolia testnet
-- **FHE**: Zama's FHEVM for encrypted computations
-- **Smart Contracts**: Solidity with FHE integration
+**Contract Address**: `0xf7161613284Fe6D6128CA347D13e18AA4D6388A4`  
+**Network**: Ethereum Sepolia Testnet  
+**Explorer**: [View on Etherscan](https://sepolia.etherscan.io/address/0xf7161613284Fe6D6128CA347D13e18AA4D6388A4)
 
-## Getting Started
+## ✨ Key Features
+
+- **🔐 FHE-Encrypted Donations**: All donation amounts and donor information are encrypted using fully homomorphic encryption
+- **👤 Anonymous Giving**: Donors can make completely anonymous donations while maintaining their reputation
+- **📊 Impact Tracking**: Real-time tracking of charitable impact with encrypted metrics
+- **⭐ Reputation System**: Encrypted reputation scoring for both donors and organizations
+- **📋 Transparent Reporting**: Verified impact reports with cryptographic proof
+- **🔗 Multi-Wallet Support**: Connect with various Web3 wallets including MetaMask, WalletConnect, and more
+- **🌐 Live Demo**: Fully functional on Sepolia testnet with real FHE encryption
+
+## 🚀 Deployment Status
+
+- ✅ **Smart Contract**: Deployed and verified on Sepolia testnet
+- ✅ **Frontend**: Live on Vercel with latest optimizations
+- ✅ **FHE Integration**: Fully functional with Zama FHEVM
+- ✅ **Gas Optimization**: Ultra-minimal contract for efficient transactions
+- ✅ **Demo Ready**: Complete end-to-end FHE donation flow
+
+## 🏗️ Technical Architecture
+
+### Frontend Stack
+- **Framework**: Vite + React + TypeScript
+- **UI**: shadcn-ui + Tailwind CSS
+- **Web3**: Wagmi + Viem + RainbowKit
+- **FHE SDK**: @zama-fhe/relayer-sdk
+
+### Blockchain & FHE
+- **Network**: Ethereum Sepolia Testnet
+- **FHE Engine**: Zama FHEVM
+- **Encryption**: Fully Homomorphic Encryption for sensitive data
+- **Gas Optimization**: Ultra-minimal contract design
+
+### Smart Contract Features
+- **Public Data**: Campaign information (transparent)
+- **Encrypted Data**: Donation amounts, anonymity status
+- **Gas Efficient**: Optimized for minimal transaction costs
+- **FHE Integration**: Real-time encrypted computations
+
+### Security & Privacy
+- **Zero-Knowledge**: Donor information remains private
+- **Encrypted Storage**: All sensitive data is FHE-encrypted
+- **Transparent Verification**: Public campaign data for accountability
+- **Anonymous Donations**: Optional complete anonymity
+
+## 🚀 Quick Start
 
 ### Prerequisites
 
 - Node.js (v18 or higher)
 - npm or yarn
 - Git
+- MetaMask or compatible Web3 wallet
+- Sepolia testnet ETH (get from [Sepolia Faucet](https://sepoliafaucet.com/))
 
 ### Installation
 
@@ -47,6 +86,28 @@ cp env.example .env
 # Start the development server
 npm run dev
 ```
+
+### Environment Variables
+
+The following environment variables are configured by default:
+
+```bash
+# Contract Configuration (Latest)
+VITE_SEPOLIA_CONTRACT_ADDRESS=0xf7161613284Fe6D6128CA347D13e18AA4D6388A4
+VITE_SEPOLIA_RPC_URL=https://1rpc.io/sepolia
+
+# Wallet Connect
+VITE_WALLET_CONNECT_PROJECT_ID=e08e99d213c331aa0fd00f625de06e66
+```
+
+### Live Demo
+
+🌐 **Try the live demo**: [Private Impact Chain on Vercel](https://private-impact-chain.vercel.app)
+
+- Connect your wallet to Sepolia testnet
+- Browse available campaigns
+- Make FHE-encrypted donations
+- Experience complete privacy with full transparency
 
 ### Environment Configuration
 

@@ -64,7 +64,7 @@ VITE_SEPOLIA_RPC_URL=https://sepolia.infura.io/v3/YOUR_INFURA_API_KEY
 | `NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID` | `YOUR_WALLET_CONNECT_PROJECT_ID` | WalletConnect project ID |
 | `VITE_WALLET_CONNECT_PROJECT_ID` | `YOUR_WALLET_CONNECT_PROJECT_ID` | WalletConnect project ID for Vite |
 | `NEXT_PUBLIC_INFURA_API_KEY` | `YOUR_INFURA_API_KEY` | Infura API key |
-| `VITE_SEPOLIA_CONTRACT_ADDRESS` | `your_contract_address` | Deployed contract address |
+| `VITE_SEPOLIA_CONTRACT_ADDRESS` | `0xf7161613284Fe6D6128CA347D13e18AA4D6388A4` | Latest minimal contract address |
 | `VITE_SEPOLIA_RPC_URL` | `https://sepolia.infura.io/v3/YOUR_INFURA_API_KEY` | Contract RPC URL |
 
 ## Troubleshooting
