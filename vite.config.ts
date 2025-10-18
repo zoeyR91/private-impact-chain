@@ -12,6 +12,7 @@ export default defineConfig(() => ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      "valtio/vanilla": "valtio",
     },
   },
   define: { 
@@ -26,13 +27,7 @@ export default defineConfig(() => ({
   },
   build: {
     rollupOptions: {
-      external: (id) => {
-        // Externalize valtio/vanilla to avoid bundling issues
-        if (id === 'valtio/vanilla') {
-          return true;
-        }
-        return false;
-      }
+      external: []
     }
   }
 }));
