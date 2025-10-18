@@ -4,7 +4,7 @@ const { join } = require("path");
 
 async function main() {
   console.log("🚀 Starting Private Impact Chain deployment...");
-  console.log("📊 Strategy: Campaign creation (public) + Donation data FHE encryption (private)");
+  console.log("📊 Strategy: Campaign创建不加密（公开信息） + 捐赠数据FHE加密（隐私保护）");
 
   // Get the contract factory
   const PrivateImpactChain = await ethers.getContractFactory("PrivateImpactChain");

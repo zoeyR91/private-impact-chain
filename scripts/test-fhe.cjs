@@ -1,12 +1,12 @@
 const { ethers } = require("ethers");
 const fs = require('fs');
 
-// 正确的FHE加密流程测试
+// Correct FHE encryption flow test
 async function testCorrectFHEFlow() {
   console.log('🚀 Starting Correct FHE Flow Test...');
-  console.log('📊 Strategy: Campaign创建不加密（公开信息） + 捐赠数据FHE加密（隐私保护）');
+  console.log('📊 Strategy: Campaign creation (public) + Donation data FHE encryption (private)');
   
-  // 1. Campaign创建 - 不使用FHE加密（公开信息）
+  // 1. Campaign creation - No FHE encryption (public information)
   console.log('\n🔄 Step 1: Campaign Creation (No FHE Encryption)...');
   const campaigns = [
     {
@@ -14,8 +14,8 @@ async function testCorrectFHEFlow() {
       name: "Clean Water Initiative",
       description: "Providing access to clean drinking water in underserved communities",
       category: "Environment",
-      targetAmount: 5000000, // $50,000 in cents - 公开信息
-      duration: 30 * 24 * 60 * 60, // 30 days - 公开信息
+      targetAmount: 5000000, // $50,000 in cents - public info
+      duration: 30 * 24 * 60 * 60, // 30 days - public info
       organizer: "0x46a0E9DC4ee067f81777124ec881Bb47e4884141"
     },
     {
@@ -23,8 +23,8 @@ async function testCorrectFHEFlow() {
       name: "Education for All Foundation",
       description: "Building schools and providing educational resources",
       category: "Education", 
-      targetAmount: 6000000, // $60,000 in cents - 公开信息
-      duration: 45 * 24 * 60 * 60, // 45 days - 公开信息
+      targetAmount: 6000000, // $60,000 in cents - public info
+      duration: 45 * 24 * 60 * 60, // 45 days - public info
       organizer: "0x46a0E9DC4ee067f81777124ec881Bb47e4884141"
     }
   ];
@@ -32,30 +32,30 @@ async function testCorrectFHEFlow() {
   console.log('✅ Step 1 completed: Campaigns created with public data');
   campaigns.forEach(campaign => {
     console.log(`  📝 Campaign: ${campaign.name}`);
-    console.log(`    - Target: $${campaign.targetAmount/100} (公开)`);
-    console.log(`    - Duration: ${campaign.duration} seconds (公开)`);
-    console.log(`    - Organizer: ${campaign.organizer} (公开)`);
+    console.log(`    - Target: $${campaign.targetAmount/100} (public)`);
+    console.log(`    - Duration: ${campaign.duration} seconds (public)`);
+    console.log(`    - Organizer: ${campaign.organizer} (public)`);
   });
   
-  // 2. 捐赠数据 - 使用FHE加密（隐私保护）
+  // 2. Donation data - Use FHE encryption (privacy protection)
   console.log('\n🔄 Step 2: Donation Data Encryption (FHE Protected)...');
   const donations = [
     { 
       campaignId: 1, 
-      amount: 100000, // $1,000 - 需要加密保护
-      isAnonymous: true, // 匿名状态 - 需要加密保护
+      amount: 100000, // $1,000 - needs encryption protection
+      isAnonymous: true, // anonymous status - needs encryption protection
       donor: "0x1234567890123456789012345678901234567890"
     },
     { 
       campaignId: 1, 
-      amount: 250000, // $2,500 - 需要加密保护
-      isAnonymous: false, // 公开捐赠 - 需要加密保护
+      amount: 250000, // $2,500 - needs encryption protection
+      isAnonymous: false, // public donation - needs encryption protection
       donor: "0x2345678901234567890123456789012345678901"
     },
     { 
       campaignId: 2, 
-      amount: 500000, // $5,000 - 需要加密保护
-      isAnonymous: true, // 匿名状态 - 需要加密保护
+      amount: 500000, // $5,000 - needs encryption protection
+      isAnonymous: true, // anonymous status - needs encryption protection
       donor: "0x3456789012345678901234567890123456789012"
     }
   ];
@@ -65,7 +65,7 @@ async function testCorrectFHEFlow() {
   for (const donation of donations) {
     console.log(`📊 Encrypting donation: $${donation.amount/100} to campaign ${donation.campaignId}`);
     
-    // 模拟FHE加密过程
+    // Simulate FHE encryption process
     const encryptedData = {
       amount: `0x${Math.random().toString(16).substring(2, 66).padEnd(64, '0')}`,
       isAnonymous: `0x${Math.random().toString(16).substring(2, 66).padEnd(64, '0')}`,
@@ -86,21 +86,21 @@ async function testCorrectFHEFlow() {
   console.log('✅ Step 2 completed: All donation data encrypted with FHE');
   console.log('📊 Encrypted donations:', encryptedDonations.length);
   
-  // 3. 上链存储
+  // 3. On-chain storage
   console.log('\n🔄 Step 3: On-chain Storage...');
   const onChainResults = [];
   
-  // Campaign存储（公开数据）
+  // Campaign storage (public data)
   for (const campaign of campaigns) {
-    console.log(`📊 Storing campaign: ${campaign.name} (公开数据)`);
+    console.log(`📊 Storing campaign: ${campaign.name} (public data)`);
     const campaignTx = {
       function: 'createCampaign',
       args: [
         campaign.name,
         campaign.description,
         campaign.category,
-        campaign.targetAmount, // 直接存储，不加密
-        campaign.duration       // 直接存储，不加密
+        campaign.targetAmount, // direct storage, no encryption
+        campaign.duration       // direct storage, no encryption
       ],
       txHash: `0x${Math.random().toString(16).substring(2, 66)}`,
       gasUsed: Math.floor(Math.random() * 200000) + 100000,
@@ -108,7 +108,7 @@ async function testCorrectFHEFlow() {
     };
     
     console.log(`  ✅ Campaign stored: ${campaignTx.txHash}`);
-    console.log(`  ✅ Gas used: ${campaignTx.gasUsed} (较低，因为无FHE)`);
+    console.log(`  ✅ Gas used: ${campaignTx.gasUsed} (lower, no FHE)`);
     
     onChainResults.push({
       type: 'campaign',
@@ -117,24 +117,24 @@ async function testCorrectFHEFlow() {
     });
   }
   
-  // 捐赠存储（加密数据）
+  // Donation storage (encrypted data)
   for (const result of encryptedDonations) {
     console.log(`📊 Storing encrypted donation: $${result.donation.amount/100}`);
     const donationTx = {
       function: 'makeDonation',
       args: [
         result.donation.campaignId,
-        result.encryptedData.amount,      // 加密存储
-        result.encryptedData.isAnonymous, // 加密存储
-        result.encryptedData.inputProof  // FHE证明
+        result.encryptedData.amount,      // encrypted storage
+        result.encryptedData.isAnonymous, // encrypted storage
+        result.encryptedData.inputProof  // FHE proof
       ],
       txHash: `0x${Math.random().toString(16).substring(2, 66)}`,
-      gasUsed: Math.floor(Math.random() * 500000) + 300000, // 更高gas，因为FHE
+      gasUsed: Math.floor(Math.random() * 500000) + 300000, // higher gas, due to FHE
       blockNumber: Math.floor(Math.random() * 1000000) + 5000000
     };
     
     console.log(`  🔐 Encrypted donation stored: ${donationTx.txHash}`);
-    console.log(`  🔐 Gas used: ${donationTx.gasUsed} (较高，因为FHE加密)`);
+    console.log(`  🔐 Gas used: ${donationTx.gasUsed} (higher, due to FHE encryption)`);
     
     onChainResults.push({
       type: 'donation',
@@ -146,14 +146,14 @@ async function testCorrectFHEFlow() {
   console.log('✅ Step 3 completed: All data stored on-chain');
   console.log('📊 On-chain results:', onChainResults.length);
   
-  // 4. 数据解密（只有捐赠数据需要解密）
+  // 4. Data decryption (only donation data needs decryption)
   console.log('\n🔄 Step 4: Data Decryption (Donations Only)...');
   const decryptionResults = [];
   
   for (const result of encryptedDonations) {
     console.log(`📊 Decrypting donation data: $${result.donation.amount/100}`);
     
-    // 模拟FHE解密过程
+    // Simulate FHE decryption process
     const decryptedData = {
       amount: result.donation.amount,
       isAnonymous: result.donation.isAnonymous
@@ -171,7 +171,7 @@ async function testCorrectFHEFlow() {
   console.log('✅ Step 4 completed: All donation data decrypted');
   console.log('📊 Decryption results:', decryptionResults.length);
   
-  // 5. 生成完整报告
+  // 5. Generate complete report
   console.log('\n🎉 Correct FHE Flow Test Completed Successfully!');
   console.log('\n📋 FHE Strategy Report:');
   console.log('='.repeat(60));
@@ -179,33 +179,33 @@ async function testCorrectFHEFlow() {
   console.log('\n📊 Campaign Data (Public - No FHE):');
   console.log(`  - Campaigns created: ${campaigns.length}`);
   console.log(`  - Total target amount: $${campaigns.reduce((sum, c) => sum + c.targetAmount, 0)/100}`);
-  console.log(`  - Average gas per campaign: ~150,000 (较低)`);
-  console.log(`  - Data visibility: 完全公开`);
+  console.log(`  - Average gas per campaign: ~150,000 (lower)`);
+  console.log(`  - Data visibility: completely public`);
   
   console.log('\n📊 Donation Data (Private - FHE Encrypted):');
   console.log(`  - Donations processed: ${donations.length}`);
   console.log(`  - Total donation amount: $${donations.reduce((sum, d) => sum + d.amount, 0)/100}`);
-  console.log(`  - Average gas per donation: ~400,000 (较高，因为FHE)`);
-  console.log(`  - Data visibility: 完全隐私保护`);
+  console.log(`  - Average gas per donation: ~400,000 (higher, due to FHE)`);
+  console.log(`  - Data visibility: completely private`);
   console.log(`  - Anonymous donations: ${donations.filter(d => d.isAnonymous).length}`);
   
   console.log('\n🔐 FHE Security Features:');
-  console.log('  ✅ Campaign data: 公开透明（无需FHE）');
-  console.log('  ✅ Donation amounts: FHE加密保护');
-  console.log('  ✅ Anonymous status: FHE加密保护');
-  console.log('  ✅ User privacy: 完全保护');
-  console.log('  ✅ Gas optimization: 合理分配');
+  console.log('  ✅ Campaign data: public transparency (no FHE needed)');
+  console.log('  ✅ Donation amounts: FHE encryption protection');
+  console.log('  ✅ Anonymous status: FHE encryption protection');
+  console.log('  ✅ User privacy: complete protection');
+  console.log('  ✅ Gas optimization: reasonable allocation');
   
   console.log('\n📊 Technical Benefits:');
-  console.log('  ✅ Campaign transparency: 完全公开');
-  console.log('  ✅ Donation privacy: 完全保护');
-  console.log('  ✅ Gas efficiency: 合理使用');
-  console.log('  ✅ User experience: 平衡透明度和隐私');
+  console.log('  ✅ Campaign transparency: completely public');
+  console.log('  ✅ Donation privacy: complete protection');
+  console.log('  ✅ Gas efficiency: reasonable usage');
+  console.log('  ✅ User experience: balanced transparency and privacy');
   
-  // 保存测试结果
+  // Save test results
   const testResults = {
     timestamp: new Date().toISOString(),
-    strategy: 'Campaign公开 + 捐赠FHE加密',
+    strategy: 'Campaign public + Donation FHE encryption',
     campaigns: {
       count: campaigns.length,
       totalTarget: campaigns.reduce((sum, c) => sum + c.targetAmount, 0),
@@ -239,5 +239,5 @@ async function testCorrectFHEFlow() {
   console.log('🔐 Donations: FHE privacy protection');
 }
 
-// 运行测试
+// Run test
 testCorrectFHEFlow().catch(console.error);
