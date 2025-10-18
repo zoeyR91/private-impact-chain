@@ -4,7 +4,7 @@ import { sepolia } from 'wagmi/chains'
 import { http } from 'viem'
 
 // Using the provided WalletConnect Project ID
-export const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID || 'YOUR_WALLET_CONNECT_PROJECT_ID'
+export const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID || 'e08e99d213c331aa0fd00f625de06e66'
 
 // Create wagmiConfig for Web3Modal - Sepolia testnet only
 export const config = defaultWagmiConfig({
@@ -17,7 +17,7 @@ export const config = defaultWagmiConfig({
     icons: ['https://private-impact-chain.vercel.app/favicon.ico']
   },
   transports: {
-    [sepolia.id]: http(import.meta.env.VITE_SEPOLIA_RPC_URL || 'https://sepolia.infura.io/v3/YOUR_INFURA_API_KEY'),
+    [sepolia.id]: http(import.meta.env.VITE_SEPOLIA_RPC_URL || 'https://1rpc.io/sepolia'),
   }
 })
 
@@ -41,5 +41,5 @@ export const contractAddresses = {
 
 // RPC URLs for Sepolia testnet
 export const rpcUrls = {
-  [sepolia.id]: import.meta.env.VITE_SEPOLIA_RPC_URL || 'https://sepolia.infura.io/v3/b18fb7e6ca7045ac83c41157ab93f990',
+  [sepolia.id]: import.meta.env.VITE_SEPOLIA_RPC_URL || 'https://1rpc.io/sepolia',
 };

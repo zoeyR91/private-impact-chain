@@ -1,11 +1,24 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Heart, Shield, Eye, Lock, Zap, Users, Target, TrendingUp, ArrowRight, Play, Droplets } from 'lucide-react';
 
 const Index = () => {
+  const { address, isConnected } = useAccount();
+  const { connect, connectors, isPending } = useConnect();
+  const { disconnect } = useDisconnect();
+
+  const handleConnectWallet = () => {
+    if (isConnected) {
+      disconnect();
+    } else {
+      connect({ connector: connectors[0] });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Header */}
@@ -38,15 +51,30 @@ const Index = () => {
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="w-full sm:w-auto">
+            <Button 
+              size="lg" 
+              className="w-full sm:w-auto"
+              onClick={handleConnectWallet}
+              disabled={isPending}
+            >
               <Shield className="mr-2 h-5 w-5" />
-              Connect Wallet
+              {isPending ? 'Connecting...' : isConnected ? 'Disconnect Wallet' : 'Connect Wallet'}
             </Button>
-            <Button variant="outline" size="lg" className="w-full sm:w-auto">
-              <Heart className="mr-2 h-5 w-5" />
-              Make Donation
-            </Button>
+            {isConnected && (
+              <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                <Heart className="mr-2 h-5 w-5" />
+                Make Donation
+              </Button>
+            )}
           </div>
+          
+          {isConnected && address && (
+            <div className="mt-4 text-center">
+              <Badge variant="outline" className="text-sm">
+                Connected: {address.slice(0, 6)}...{address.slice(-4)}
+              </Badge>
+            </div>
+          )}
         </div>
       </div>
       
